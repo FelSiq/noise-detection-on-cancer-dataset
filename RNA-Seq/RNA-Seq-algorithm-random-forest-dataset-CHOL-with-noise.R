@@ -1,0 +1,126 @@
+# Specifications: ------------------------------------------
+# 	Algorithm : 'Random Forest Classfier' from library 'randomForest'
+# 	Noise Filtering (1 or 0): 1
+#	Noise inputation rate used: 0.1
+#	Type of noise inputation: Pairwise (x% of the majority class labels are changed to the 2nd majority class label)
+# 	Additional Libraries : 'caTools' (for data split), 'NoiseFiltersR' for noise filters
+# 	Dataset type: RNA-Seq
+# 	Dataset deeper specifications: 
+		# Total Attributes: 19665
+		# Total Sample: 45
+		# Total TP: 36
+		# Total NT: 9
+		# About : Expressionless genes have been removed, i.e., features that in all samples have zero value.
+		# Total removed genes:  866
+# 	Dataset name: 'CHOL.rnaseqv2.txt'
+# ----------------------------------------------------------
+# Auxiliary functions to wise()
+index = function(data, rate) {
+
+	value = trunc(nrow(data)*rate);
+	noise = sample(rownames(data), value, replace=FALSE);
+	return(noise);
+}
+
+nc.majority = function(data) {
+
+	aux = summary(data$Class);
+	aux = sort(aux, decreasing=TRUE)[1:2];
+	return(names(aux));
+}
+
+# Pairwise: X. Zhu et al. Eliminating class noise in large datasets (& Luis Paulo code)
+wise = function(data, rate) {
+	aux = list();
+
+	if(rate == 0) {
+		aux$data = data;
+		return(aux);
+	}
+
+ 	class = nc.majority(data);
+ 	noise = index(data[data$Class == class[1],], rate);
+ 	data[noise,]$Class = class[2];
+ 
+	aux$noise = noise;
+	aux$data = data;
+ 	return(aux);
+}
+# ----------------------------------------------------------
+# RandomForest wrapper (n is the number of trees)
+callRandomForest <- function(set.train, n = 10) {
+	return (randomForest(
+		formula = Class ~ .,
+		ntree = n,
+		x = set.train[-ncol(set.train)],
+		y = set.train$Class,
+		importance = TRUE))
+}
+# ----------------------------------------------------------
+
+# 1) Get the Dataset.
+dataset <- read.csv('CHOL.rnaseqv2.txt', sep = ' ')
+
+# A custom seed will be used to ensure experiment replication
+set.seed(101010)
+
+# 2) Load all the necessary packages for this test
+library(caTools) # For data splitting
+library(randomForest) # For prediction test
+library(NoiseFiltersR) # For noise filters
+
+# Set the target feature binary factor type
+dataset$class <- factor(
+	x = dataset$class, 
+	levels = unique(dataset$class), 
+	labels = c(0, 1))
+
+# Noise inputation requeriment
+colnames(dataset)[ncol(dataset)] <- 'Class'
+
+# 3) Split the dataset in Train and Test sets
+datasplit <- sample.split(dataset$Class, SplitRatio = 0.60)
+set.train <- subset(dataset, datasplit)
+set.test <- subset(dataset, !datasplit)
+
+# 4) Train a classifier with the original data (before artificial noise inputation)
+classifierOriginalData <- callRandomForest(set.train)
+
+# 5) Input artificial noise
+# Should be tested with [0.05, 0.4] with 0.05 incremental rate
+set.train.noise <- wise(set.train, 0.2)
+
+# 6) Train a randomForest classifier (from randomForest package) with class noise
+classifierNoiseData <- callRandomForest(set.train.noise$data)
+
+# 7) Use a noise filter here
+filterResult <- HARF(
+	set.train.noise$data,
+	nfolds = 5, 
+	agreementLevel = 0.7, 
+	ntrees = 10)
+
+# 8) Train a new classifier, after the noise filtering 
+classifierNoiseFilteredData <- callRandomForest(filterResult$cleanData)
+
+# 10) Use the original classifier to predict some results
+predictionsOriginal <- predict(
+	object = classifierOriginalData,
+	newdata = set.test)
+
+# 9) Use the noise classifier to predict some results
+predictionsNoise <- predict(
+	object = classifierNoiseData,
+	newdata = set.test)
+
+# 9) Use the filtered classifier to predict some results
+predictionsFiltered <- predict(
+	object = classifierNoiseFilteredData,
+	newdata = set.test)
+
+# 11) Check all results
+print(classifierOriginalData)
+print(classifierNoiseData)
+print(classifierNoiseFilteredData)
+
+# 12) Conclusions
