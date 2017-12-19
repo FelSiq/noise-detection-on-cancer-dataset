@@ -17,11 +17,14 @@ set.seed(101010)
 library(caTools) # For data splitting
 library(randomForest) # For prediction test
 
-# Set the target feature binary factor type
+# Set the target feature a binary factor type
 dataset$class <- factor(
 	x = dataset$class, 
 	levels = unique(dataset$class), 
 	labels = c(0, 1))
+
+# Fazer aqui uma validacao cruzada!!!
+# OBS: A cross validation deve ser 
 
 # 3) Split the dataset in Train and Test sets
 datasplit <- sample.split(dataset$class, SplitRatio = 0.75)
@@ -31,7 +34,7 @@ set.test <- subset(dataset, !datasplit)
 # 4) Train a randomForest classifier (from randomForest package)
 classifier <- randomForest(
 	formula = Class ~ .,
-	ntree = 5,
+	ntree = 10,
 	x = set.train[-ncol(set.train)],
 	y = set.train$class,
 	importance = TRUE)
@@ -43,3 +46,4 @@ predictions <- predict(
 
 # 6) Check the confusion matrix
 table(set.test$class, predictions)
+print(classifier)

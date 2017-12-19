@@ -37,10 +37,10 @@ set.test <- subset(dataset.t, !datasplit)
 # 5) Train a randomForest classifier (from randomForest package)
 classifier <- randomForest(
 	formula = Class ~ .,
-	ntree = 100,
+	ntree = 10,
 	x = set.train[-1],
 	y = set.train$Class,
-	importance = FALSE)
+	importance = TRUE)
 
 # 6) Use the classifier to predict some results
 predictions <- predict(
@@ -49,3 +49,4 @@ predictions <- predict(
 
 # 7) Check the confusion matrix
 table(set.test$Class, predictions)
+print(classifier)

@@ -1,9 +1,12 @@
 # Specifications: ------------------------------------------
 # 	Algorithm : 'Random Forest Classfier' from library 'randomForest'
 # 	Noise Filtering (1 or 0): 1
-#	Noise inputation rate used: 0.1
-#	Type of noise inputation: Pairwise (x% of the majority class labels are changed to the 2nd majority class label)
-# 	Additional Libraries : 'caTools' (for data split), 'NoiseFiltersR' for noise filters
+#	Noise inputation rate used: 0.2
+#	Type of noise inputation: Random
+# 	Additional Libraries : 
+#	'caTools' (for data split), 
+#	'NoiseFiltersR' for noise filters
+#	'DMwR' for SMOTE technique (for unbalanced data)
 # 	Dataset type: RNA-Seq
 # 	Dataset deeper specifications: 
 		# Total Attributes: 19665
@@ -22,15 +25,8 @@ index = function(data, rate) {
 	return(noise);
 }
 
-nc.majority = function(data) {
-
-	aux = summary(data$Class);
-	aux = sort(aux, decreasing=TRUE)[1:2];
-	return(names(aux));
-}
-
-# Pairwise: X. Zhu et al. Eliminating class noise in large datasets (& Luis Paulo code)
-wise = function(data, rate) {
+# Random: X. Zhu et al. Eliminating class noise in large datasets (& Luis Paulo code)
+rand = function(data, rate) {
 	aux = list();
 
 	if(rate == 0) {
@@ -38,28 +34,29 @@ wise = function(data, rate) {
 		return(aux);
 	}
 
- 	class = nc.majority(data);
- 	noise = index(data[data$Class == class[1],], rate);
- 	data[noise,]$Class = class[2];
- 
+	noise = index(data, rate);
+	data[noise,]$Class = unlist(lapply(noise, function(i) {
+		sample(setdiff(levels(data$Class), data[i,]$Class), 1);
+	}));
+	
 	aux$noise = noise;
 	aux$data = data;
- 	return(aux);
+	return(aux);
 }
+
 # ----------------------------------------------------------
 # RandomForest wrapper (n is the number of trees)
-callRandomForest <- function(set.train, n = 10) {
+callRandomForest <- function(data) {
 	return (randomForest(
 		formula = Class ~ .,
-		ntree = n,
-		x = set.train[-ncol(set.train)],
-		y = set.train$Class,
-		importance = TRUE))
+		x = data[-ncol(data)],
+		y = data$Class))
 }
 # ----------------------------------------------------------
 
+
 # 1) Get the Dataset.
-dataset <- read.csv('CHOL.rnaseqv2.txt', sep = ' ')
+dataset <- read.csv('/home/felipe/Documentos/IC-related/IC/dataset/RNA-Seq/RNA-Seq\ -\ 2015\ -\ TCGA/CHOL.rnaseqv2.txt', sep = ' ')
 
 # A custom seed will be used to ensure experiment replication
 set.seed(101010)
@@ -68,6 +65,8 @@ set.seed(101010)
 library(caTools) # For data splitting
 library(randomForest) # For prediction test
 library(NoiseFiltersR) # For noise filters
+library(unbalanced) # For SMOTE (treatment of unbalanced dataset)
+library(caret)
 
 # Set the target feature binary factor type
 dataset$class <- factor(
@@ -83,22 +82,25 @@ datasplit <- sample.split(dataset$Class, SplitRatio = 0.60)
 set.train <- subset(dataset, datasplit)
 set.test <- subset(dataset, !datasplit)
 
+# 3.1) Use SMOTE on the train set, in order to balance the dataset
+# set.train['Class'] <- revalue(dataset[['Class']], c('TP' = 0, 'NT' = 1))
+# aux <- ubSMOTE(dataset[-ncol(dataset)], dataset[['Class']])
+# smotedTrainSet <- data.frame(aux$X)
+# smotedTrainSet['Class'] <- aux$Y
+
+smotedTrainSet <- set.train
+
 # 4) Train a classifier with the original data (before artificial noise inputation)
-classifierOriginalData <- callRandomForest(set.train)
+classifierOriginalData <- callRandomForest(smotedTrainSet)
 
 # 5) Input artificial noise
-# Should be tested with [0.05, 0.4] with 0.05 incremental rate
-set.train.noise <- wise(set.train, 0.2)
+smotedTrainSet.noise <- rand(smotedTrainSet, 0.2)
 
 # 6) Train a randomForest classifier (from randomForest package) with class noise
-classifierNoiseData <- callRandomForest(set.train.noise$data)
+classifierNoiseData <- callRandomForest(smotedTrainSet.noise$data)
 
 # 7) Use a noise filter here
-filterResult <- HARF(
-	set.train.noise$data,
-	nfolds = 5, 
-	agreementLevel = 0.7, 
-	ntrees = 10)
+filterResult <- HARF(smotedTrainSet.noise$data)
 
 # 8) Train a new classifier, after the noise filtering 
 classifierNoiseFilteredData <- callRandomForest(filterResult$cleanData)
@@ -119,8 +121,10 @@ predictionsFiltered <- predict(
 	newdata = set.test)
 
 # 11) Check all results
-print(classifierOriginalData)
-print(classifierNoiseData)
-print(classifierNoiseFilteredData)
+caret::confusionMatrix(predictionsOriginal, set.test$Class)
+caret::confusionMatrix(predictionsNoise, set.test$Class)
+caret::confusionMatrix(predictionsFiltered, set.test$Class)
 
-# 12) Conclusions
+# print(classifierOriginalData)
+# print(classifierNoiseData)
+# print(classifierNoiseFilteredData)
