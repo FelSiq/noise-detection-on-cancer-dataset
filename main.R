@@ -21,7 +21,7 @@ for (datasetID in 1:nrow(config.DATASET_SEQ)) {
 	dataset <- read.csv(paste('./datasets', config.DATASET_SEQ[datasetID, 1], sep='/'), sep = ' ')
 
 	if (config.DATASET_SEQ[datasetID, 2] == 'Microarray') {
-			# 3) Transpose the dataset (?)
+		# 3) Transpose the dataset (?)
 		dataset <- as.data.frame(t(dataset))
 
 		# 3.a) Correct the column names
@@ -33,11 +33,11 @@ for (datasetID in 1:nrow(config.DATASET_SEQ)) {
 		colnames(dataset)[ncol(dataset)] <- 'Class'
 	}
 
-	# Set the target feature binary factor type
-	dataset$Class <- factor(
-		x = dataset$Class, 
-		levels = unique(dataset$Class), 
-		labels = c(0, 1))
+	# Set the target feature binary factor type. 
+	# Majority class should be factor '0', and minority class factor '1' (ubSMOTE exigency).
+	labels <- unique(dataset$Class)
+	majorityLabel <- ifelse(sum(dataset$Class == labels[1]) >= length(dataset$Class)/2, 1, 2)
+	dataset$Class <- factor(ifelse(dataset$Class == labels[majorityLabel], 0, 1))
 
 	# 3) Split the dataset in Train and Test sets
 	datasplit <- sample.split(dataset$Class, SplitRatio = config.DATASPLIT_RATE)
@@ -52,9 +52,9 @@ for (datasetID in 1:nrow(config.DATASET_SEQ)) {
 			for (smoteEnabled in config.SMOTE_SEQ) {
 				# 
 				if (smoteEnabled) {
-					aux <- ubSMOTE(set.train[-ncol(dataset)], set.train[['Class']])
+					aux <- ubSMOTE(dataset[-which(colnames(dataset) == 'Class')], dataset$Class)
 					smotedTrainSet <- data.frame(aux$X)
-					smotedTrainSet['Class'] <- aux$Y
+					smotedTrainSet$Class <- aux$Y
 				} else {
 					smotedTrainSet <- set.train
 				}
