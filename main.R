@@ -14,7 +14,7 @@ for (datasetID in 1:nrow(config.DATASET_SEQ)) {
 	# 1) Get the Dataset.
 	dataset <- read.csv(paste('./datasets', config.DATASET_SEQ[datasetID, 1], sep='/'), sep = ' ')
 
-	# 
+	# Microarray-type datasets need a 'special' preprocessing
 	if (config.DATASET_SEQ[datasetID, 2] == 'Microarray') {
 		# 3) Transpose the dataset (?)
 		dataset <- as.data.frame(t(dataset))
@@ -39,35 +39,43 @@ for (datasetID in 1:nrow(config.DATASET_SEQ)) {
 	set.train <- subset(dataset, datasplit)
 	set.test <- subset(dataset, !datasplit)
 
-	# For each classifier...
-	for (classifierID in config.CLASSIFIER_SEQ) {
-		# For each noise filter...
-		for (noiseFilterID in config.NOISEFILTER_SEQ) {
-			# On and OFF with SMOTE
-			for (smoteEnabled in config.SMOTE_SEQ) {
-				# 
-				if (smoteEnabled) {
-					aux <- ubSMOTE(dataset[-which(colnames(dataset) == 'Class')], dataset$Class)
-					smotedTrainSet <- data.frame(aux$X)
-					smotedTrainSet$Class <- aux$Y
-				} else {
-					smotedTrainSet <- set.train
-				}
-
-				# 4) Train a classifier with the original data (before artificial noise inputation)
-				predictionsOriginal <- general.fitAndPredict(smotedTrainSet, set.test, classifierID)
-
-				# 5) Input artificial noise
-				smotedTrainSet.noise <- rand(smotedTrainSet, config.ERROR_INPUT_RATE)
-
-				# 6) Train a randomForest classifier (from randomForest package) with class noise
-				predictionsNoise <- general.fitAndPredict(smotedTrainSet.noise$data, set.test, classifierID)
-
+	# For each classifier
+	for (smoteEnabled in config.SMOTE_SEQ) {
+		# If smote enable, then call ubSMOTE. Otherwise, the 'smotedTrainSet' is 'secretly' just the set.train
+		if (smoteEnabled) {
+			aux <- ubSMOTE(dataset[-which(colnames(dataset) == 'Class')], dataset$Class)
+			smotedTrainSet <- data.frame(aux$X)
+			smotedTrainSet$Class <- aux$Y
+			# @ Garbage collection (to avoid memory issues) -------
+			rm(aux)
+			gc()
+			# @ ---------------------------------------------------
+		} else {
+			smotedTrainSet <- set.train
+		}
+		
+		# 5) Input artificial noise
+		smotedTrainSet.noise <- rand(smotedTrainSet, config.ERROR_INPUT_RATE)
+		
+		for (classifierID in config.CLASSIFIER_SEQ) {
+			# 4) Train a classifier with the original data (before artificial noise inputation)
+			predictionsOriginal <- general.fitAndPredict(smotedTrainSet, set.test, classifierID)
+			
+			# 6) Train a randomForest classifier (from randomForest package) with class noise
+			predictionsNoise <- general.fitAndPredict(smotedTrainSet.noise$data, set.test, classifierID)
+			
+			# For each noise filter...
+			for (noiseFilterID in config.NOISEFILTER_SEQ) {
 				# 7) Use a noise filter here
 				filterResult <- general.callNoiseFilter(smotedTrainSet.noise$data, noiseFilterID)
 
 				# 8) Train a new classifier, after the noise filtering 
 				predictionsFiltered <- general.fitAndPredict(filterResult$cleanData, set.test, classifierID)
+
+				# @ Garbage collection (to avoid memory issues) -------
+				rm(filterResult)
+				gc()
+				# @ ---------------------------------------------------
 
 				# 11) Check accuracy results
 				accOriginal <- caret::confusionMatrix(predictionsOriginal, set.test$Class)$overall[1]
@@ -75,7 +83,7 @@ for (datasetID in 1:nrow(config.DATASET_SEQ)) {
 				accFiltered <- caret::confusionMatrix(predictionsFiltered, set.test$Class)$overall[1]
 
 				cat(config.DATASET_SEQ[datasetID, 1], classifierID, noiseFilterID, 
-					smoteEnabled, accOriginal, accNoise, accFiltered, '\n', sep='_')
+					smoteEnabled, accOriginal, accNoise, accFiltered, '\n', sep='|')
 			}
 		}
 	}

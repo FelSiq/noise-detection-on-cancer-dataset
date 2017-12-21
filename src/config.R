@@ -32,7 +32,7 @@ config.DATASET_SEQ <- t(matrix(c(
 		c('LUAD.mirnaseq.txt', 'Micro-RNA')
 	), 2, 5))
 config.CLASSIFIER_SEQ <- c('KNN', 'SVM', 'RF')
-config.NOISEFILTER_SEQ <- c('HARF')
+config.NOISEFILTER_SEQ <- c('SF')
 
 DEBUG = TRUE 
 if (!DEBUG) {
@@ -62,7 +62,7 @@ if (!DEBUG) {
 
 # Turn SMOTE OFF and ON, for each noise filter
 config.SMOTE_SEQ <- c(FALSE, TRUE)
-#
+# Rate of data split between train and test set
 config.DATASPLIT_RATE <- 0.6
-# 
+# Rate of the artificial noise input
 config.ERROR_INPUT_RATE <- 0.2
