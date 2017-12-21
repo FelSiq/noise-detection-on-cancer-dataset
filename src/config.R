@@ -25,13 +25,13 @@ library(unbalanced) # For SMOTE (treatment of unbalanced dataset)
 library(caret) # For a good confusion matrix
 
 config.DATASET_SEQ <- t(matrix(c(
-	c('dataset_lymphoma_shipp.txt', 'Microarray'),
-	c('dataset_adrenal_dahia.txt', 'Microarray'),
-	c('dataset_mixed_chowdary.txt', 'Microarray'),
-	c('dataset_colon_alon.txt', 'Microarray'),
-	c('dataset_prostate_singh.txt', 'Microarray')
+		c('BRCA.mirnaseq.txt', 'Micro-RNA'),
+		c('KICH.mirnaseq.txt', 'Micro-RNA'),
+		c('THCA.mirnaseq.txt', 'Micro-RNA'),
+		c('CHOL.mirnaseq.txt', 'Micro-RNA'),
+		c('LUAD.mirnaseq.txt', 'Micro-RNA')
 	), 2, 5))
-config.CLASSIFIER_SEQ <- c('SVM', 'RF')
+config.CLASSIFIER_SEQ <- c('KNN', 'SVM', 'RF')
 config.NOISEFILTER_SEQ <- c('HARF')
 
 DEBUG = TRUE 
@@ -55,7 +55,7 @@ if (!DEBUG) {
 		c('THCA.rnaseqv2.txt', 'RNA-Seq')),
 		2, 15))
 	# This is the sequence which the choosen classifiers will be called, for each dataset
-	config.CLASSIFIER_SEQ <- c('RF', 'SVM', 'kNN')
+	config.CLASSIFIER_SEQ <- c('RF', 'SVM', 'KNN')
 	# Sequence of Noise filters, for each classifier
 	config.NOISEFILTER_SEQ <- c('HARF', 'AENN', 'INFFC', 'SF')
 }
