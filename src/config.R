@@ -37,7 +37,7 @@ config.DATASET_SEQ <- t(matrix(c(
 	# c('THCA.rnaseqv2.txt', 'RNA-Seq')
 	), 2, 5))
 config.CLASSIFIER_SEQ <- c('SVM', 'RF')
-config.NOISEFILTER_SEQ <- c('AENN')
+config.NOISEFILTER_SEQ <- c('INFFC')
 
 DEBUG = TRUE 
 if (!DEBUG) {

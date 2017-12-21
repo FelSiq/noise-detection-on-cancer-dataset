@@ -20,14 +20,24 @@ for (datasetID in 1:nrow(config.DATASET_SEQ)) {
 	# 1) Get the Dataset.
 	dataset <- read.csv(paste('./datasets', config.DATASET_SEQ[datasetID, 1], sep='/'), sep = ' ')
 
-	# Set the target feature binary factor type
-	dataset$class <- factor(
-		x = dataset$class, 
-		levels = unique(dataset$class), 
-		labels = c(0, 1))
+	if (config.DATASET_SEQ[datasetID, 2] == 'Microarray') {
+			# 3) Transpose the dataset (?)
+		dataset <- as.data.frame(t(dataset))
 
-	# Noise inputation and SMOTE requeriments
-	colnames(dataset)[ncol(dataset)] <- 'Class'
+		# 3.a) Correct the column names
+		# The output/target feature will be named 'Class', and the prediction 
+		# features will be enumered with a natural number sequence.
+		colnames(dataset) <- c('Class', seq(1, ncol(dataset) - 1))
+	} else {
+		# Noise inputation and SMOTE requeriments
+		colnames(dataset)[ncol(dataset)] <- 'Class'
+	}
+
+	# Set the target feature binary factor type
+	dataset$Class <- factor(
+		x = dataset$Class, 
+		levels = unique(dataset$Class), 
+		labels = c(0, 1))
 
 	# 3) Split the dataset in Train and Test sets
 	datasplit <- sample.split(dataset$Class, SplitRatio = config.DATASPLIT_RATE)
