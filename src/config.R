@@ -25,11 +25,11 @@ library(unbalanced) # For SMOTE (treatment of unbalanced dataset)
 library(caret) # For a good confusion matrix
 
 config.DATASET_SEQ <- t(matrix(c(
-		c('BRCA.mirnaseq.txt', 'Micro-RNA'),
-		c('KICH.mirnaseq.txt', 'Micro-RNA'),
-		c('THCA.mirnaseq.txt', 'Micro-RNA'),
 		c('CHOL.mirnaseq.txt', 'Micro-RNA'),
+		c('KICH.mirnaseq.txt', 'Micro-RNA'),
 		c('LUAD.mirnaseq.txt', 'Micro-RNA'),
+		c('THCA.mirnaseq.txt', 'Micro-RNA'),
+		c('BRCA.mirnaseq.txt', 'Micro-RNA'),
 		c('dataset_lymphoma_shipp.txt', 'Microarray'),
 		c('dataset_adrenal_dahia.txt', 'Microarray'),
 		c('dataset_mixed_chowdary.txt', 'Microarray'),
@@ -37,7 +37,7 @@ config.DATASET_SEQ <- t(matrix(c(
 		c('dataset_prostate_singh.txt', 'Microarray')
 	), 2, 10))
 config.CLASSIFIER_SEQ <- c('KNN', 'SVM', 'RF')
-config.NOISEFILTER_SEQ <- c('HARF', 'AENN', 'INFFC')
+config.NOISEFILTER_SEQ <- c('HARF', 'AENN')
 
 DEBUG = TRUE 
 if (!DEBUG) {
