@@ -29,20 +29,25 @@ config.DATASET_SEQ <- t(matrix(c(
 		c('KICH.mirnaseq.txt', 'Micro-RNA'),
 		c('THCA.mirnaseq.txt', 'Micro-RNA'),
 		c('CHOL.mirnaseq.txt', 'Micro-RNA'),
-		c('LUAD.mirnaseq.txt', 'Micro-RNA')
-	), 2, 5))
+		c('LUAD.mirnaseq.txt', 'Micro-RNA'),
+		c('dataset_lymphoma_shipp.txt', 'Microarray'),
+		c('dataset_adrenal_dahia.txt', 'Microarray'),
+		c('dataset_mixed_chowdary.txt', 'Microarray'),
+		c('dataset_colon_alon.txt', 'Microarray'),
+		c('dataset_prostate_singh.txt', 'Microarray')
+	), 2, 10))
 config.CLASSIFIER_SEQ <- c('KNN', 'SVM', 'RF')
-config.NOISEFILTER_SEQ <- c('SF')
+config.NOISEFILTER_SEQ <- c('HARF', 'AENN', 'INFFC')
 
 DEBUG = TRUE 
 if (!DEBUG) {
 	# Initial experiment setup
 	config.DATASET_SEQ <- t(matrix(c(
-		c('BRCA.mirnaseq.txt', 'Micro-RNA'),
-		c('KICH.mirnaseq.txt', 'Micro-RNA'),
-		c('THCA.mirnaseq.txt', 'Micro-RNA'),
 		c('CHOL.mirnaseq.txt', 'Micro-RNA'),
+		c('KICH.mirnaseq.txt', 'Micro-RNA'),
 		c('LUAD.mirnaseq.txt', 'Micro-RNA'),
+		c('THCA.mirnaseq.txt', 'Micro-RNA'),
+		c('BRCA.mirnaseq.txt', 'Micro-RNA'),
 		c('dataset_lymphoma_shipp.txt', 'Microarray'),
 		c('dataset_adrenal_dahia.txt', 'Microarray'),
 		c('dataset_mixed_chowdary.txt', 'Microarray'),
@@ -57,7 +62,7 @@ if (!DEBUG) {
 	# This is the sequence which the choosen classifiers will be called, for each dataset
 	config.CLASSIFIER_SEQ <- c('RF', 'SVM', 'KNN')
 	# Sequence of Noise filters, for each classifier
-	config.NOISEFILTER_SEQ <- c('HARF', 'AENN', 'INFFC', 'SF')
+	config.NOISEFILTER_SEQ <- c('HARF', 'AENN', 'INFFC', 'ENG')
 }
 
 # Turn SMOTE OFF and ON, for each noise filter
@@ -66,3 +71,5 @@ config.SMOTE_SEQ <- c(FALSE, TRUE)
 config.DATASPLIT_RATE <- 0.6
 # Rate of the artificial noise input
 config.ERROR_INPUT_RATE <- 0.2
+# Number of folds in the cross validation of the experiments
+config.FOLDS_NUM_CROSS_VALIDATION <- 5

@@ -39,7 +39,6 @@ for (datasetID in 1:nrow(config.DATASET_SEQ)) {
 	set.train <- subset(dataset, datasplit)
 	set.test <- subset(dataset, !datasplit)
 
-	# For each classifier
 	for (smoteEnabled in config.SMOTE_SEQ) {
 		# If smote enable, then call ubSMOTE. Otherwise, the 'smotedTrainSet' is 'secretly' just the set.train
 		if (smoteEnabled) {
@@ -57,12 +56,15 @@ for (datasetID in 1:nrow(config.DATASET_SEQ)) {
 		# 5) Input artificial noise
 		smotedTrainSet.noise <- rand(smotedTrainSet, config.ERROR_INPUT_RATE)
 		
+		# For each classifier
 		for (classifierID in config.CLASSIFIER_SEQ) {
 			# 4) Train a classifier with the original data (before artificial noise inputation)
 			predictionsOriginal <- general.fitAndPredict(smotedTrainSet, set.test, classifierID)
+			accOriginal <- caret::confusionMatrix(predictionsOriginal, set.test$Class)$overall[1]
 			
 			# 6) Train a randomForest classifier (from randomForest package) with class noise
 			predictionsNoise <- general.fitAndPredict(smotedTrainSet.noise$data, set.test, classifierID)
+			accNoise <- caret::confusionMatrix(predictionsNoise, set.test$Class)$overall[1]
 			
 			# For each noise filter...
 			for (noiseFilterID in config.NOISEFILTER_SEQ) {
@@ -71,6 +73,7 @@ for (datasetID in 1:nrow(config.DATASET_SEQ)) {
 
 				# 8) Train a new classifier, after the noise filtering 
 				predictionsFiltered <- general.fitAndPredict(filterResult$cleanData, set.test, classifierID)
+				accFiltered <- caret::confusionMatrix(predictionsFiltered, set.test$Class)$overall[1]
 
 				# @ Garbage collection (to avoid memory issues) -------
 				rm(filterResult)
@@ -78,10 +81,6 @@ for (datasetID in 1:nrow(config.DATASET_SEQ)) {
 				# @ ---------------------------------------------------
 
 				# 11) Check accuracy results
-				accOriginal <- caret::confusionMatrix(predictionsOriginal, set.test$Class)$overall[1]
-				accNoise <- caret::confusionMatrix(predictionsNoise, set.test$Class)$overall[1]
-				accFiltered <- caret::confusionMatrix(predictionsFiltered, set.test$Class)$overall[1]
-
 				cat(config.DATASET_SEQ[datasetID, 1], classifierID, noiseFilterID, 
 					smoteEnabled, accOriginal, accNoise, accFiltered, '\n', sep='|')
 			}

@@ -20,17 +20,17 @@ general.fitClassifier <- function(data, classifierID = 'RF') {
 }
 
 general.fitAndPredict <- function(data.train, data.test, type = 'RF') {
-	predictions <- NULL
+	prediction <- NULL
 	if (type == 'KNN') {
-		predictions <- prediction <- knn(
+		prediction <- knn(
 			train = data.train[-which(colnames(data.train) == 'Class')], 
 			test = data.test[-which(colnames(data.test) == 'Class')],
 			cl = data.train$Class)
 	} else {
 		model <- general.fitClassifier(data.train, type)
-		predictions <- predict(model, newdata = data.test)
+		prediction <- predict(model, newdata = data.test)
 	}
-	return (predictions)
+	return (prediction)
 }
 
 general.callNoiseFilter <- function(data, filterId = 'HARF') {
@@ -45,8 +45,8 @@ general.callNoiseFilter <- function(data, filterId = 'HARF') {
 		'INFFC' = {
 				cleanData <- INFFC(Class ~ ., data)
 			},
-		'SF' = {
-				cleanData <- saturationFilter(Class ~ ., data)
+		'ENG' = {
+				cleanData <- ENG(Class ~ ., data)
 			}
 		)
 	return (cleanData)
