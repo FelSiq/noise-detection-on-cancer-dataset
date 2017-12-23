@@ -4,7 +4,7 @@ general.fitClassifier <- function(data, classifierID = 'RF') {
 		'RF' = {
 			model <- randomForest(
 				formula = Class ~ .,
-				x = data[-which(colnames(data.test) == 'Class')],
+				x = data[-which(colnames(data) == 'Class')],
 				y = data$Class)
 			},
 		'SVM' = {

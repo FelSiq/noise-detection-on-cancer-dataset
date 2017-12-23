@@ -22,7 +22,7 @@ for (datasetID in 1:nrow(config.DATASET_SEQ)) {
 		# 3.a) Correct the column names
 		# The output/target feature will be named 'Class', and the prediction 
 		# features will be enumered with a natural number sequence.
-		colnames(dataset) <- c('Class', seq(1, ncol(dataset) - 1))
+		colnames(dataset) <- c('Class', paste('X', seq(1, ncol(dataset) - 1), sep = ''))
 
 		# Move the Class column to the last dataset column
 		dataset <- dataset[, c(2:(ncol(dataset)), 1)]
@@ -41,7 +41,6 @@ for (datasetID in 1:nrow(config.DATASET_SEQ)) {
 	bags <- sample(1:config.FOLDS_NUM_CROSS_VALIDATION, size = nrow(dataset), replace = TRUE)
 
 	# 
-	accuracy <- vector()
 	for (i in 1:config.FOLDS_NUM_CROSS_VALIDATION) {
 		# 
 		set.train <- subset(dataset, i != bags)
@@ -61,6 +60,7 @@ for (datasetID in 1:nrow(config.DATASET_SEQ)) {
 				smotedTrainSet <- set.train
 			}
 			
+
 			# 5) Input artificial noise
 			smotedTrainSet.noise <- rand(smotedTrainSet, config.ERROR_INPUT_RATE)
 			
