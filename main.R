@@ -23,6 +23,9 @@ for (datasetID in 1:nrow(config.DATASET_SEQ)) {
 		# The output/target feature will be named 'Class', and the prediction 
 		# features will be enumered with a natural number sequence.
 		colnames(dataset) <- c('Class', seq(1, ncol(dataset) - 1))
+
+		# Move the Class column to the last dataset column
+		dataset <- dataset[, c(2:(ncol(dataset)), 1)]
 	} else {
 		# Noise inputation and SMOTE requeriments
 		colnames(dataset)[ncol(dataset)] <- 'Class'
