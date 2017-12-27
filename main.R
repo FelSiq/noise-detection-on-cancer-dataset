@@ -83,10 +83,13 @@ for (datasetID in 1:nrow(config.DATASET_SEQ)) {
 					accFiltered <- caret::confusionMatrix(predictionsFiltered, set.test$Class)$overall[1]
 
 					# 11) Check accuracy results
-					cat(i, config.DATASET_SEQ[datasetID, 1], classifierID, noiseFilterID, 
+					cat(date(), i, config.DATASET_SEQ[datasetID, 1], classifierID, noiseFilterID, 
 						smoteEnabled, accOriginal, accNoise, accFiltered, '\n', sep='|')
 				}
 			}
 		}
 	}
 }
+
+#
+sink()

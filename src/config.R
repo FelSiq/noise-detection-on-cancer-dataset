@@ -10,10 +10,14 @@
 #	4) Libraries used
 #	5) Algorithms (for noise filtering and classification) used
 #	6) Input rate of artificial noise
+#	7) Output file to save results
 # ===================================================================
 
 # A custom seed will be used to ensure experiment replication
 set.seed(101010)
+
+# Set default output file
+sink(file = 'NoiseResults.dat', append = TRUE)
 
 # Load all the necessary packages for this test
 library(caTools) # For data splitting
