@@ -10,6 +10,23 @@ The corrupted dataset is feed into each noise filter at a time, expecting that t
 
 To verify the performance of each noise filter, different predictive models are fit with the original dataset, the corrupted dataset and the filtered dataset, and these three accuracies got to be are compared.
 
+# Technical details:
+The experiment is reproducible, because the random seed is fixed with the arbitrarily selected '101010' value, wich means that all script run should hold the same results. 
+
+If you're interested on the results, just check out the 'results' subdirectory.
+
+If you want to change some experiment parameters, like the datasets, noise filters, classifiers, noise input ratio, number of folds on cross validation etc, just check out the './src/config.R' file and edit by hand whatever and whenever you want. More specific configuration must be edited on the 'main.R' file and it shouldn't be done unless you're sure of what you're doing, do with your own risk.
+
+# How to run:
+The whole experiment should take days or weeks to be completed, and running it isn't recommended unless you want some metadata which is not already available on the 'result' subdirectory.
+
+Just open a R section and type:
+```
+source('main.R')
+```
+
+The results will be automatically appended into the 'NoiseResults.dat' output file. If it does not exists, then it will be created. Make sure that the R section have all the permission it needs on your machine.
+
 # Filters used:
 Will may find all these filters, alongside all relevant information about then, at https://CRAN.R-project.org/package=NoiseFiltersR.
 
