@@ -14,7 +14,7 @@ To verify the performance of each noise filter, different predictive models are 
 Will may find all these filters, alongside all relevant information about then, at https://CRAN.R-project.org/package=NoiseFiltersR.
 
 - AENN ('All-k Edited Nearest Neighbors')
-- INFCC ('Iterative Noise Filter based on the Fusion of Classifiers')
+- INFFC ('Iterative Noise Filter based on the Fusion of Classifiers')
 - HARF ('High Agreement Random Forest')
 - ENG ('Editing with Nearest Graphs')
 
