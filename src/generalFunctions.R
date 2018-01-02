@@ -3,17 +3,16 @@ general.fitClassifier <- function(data, classifierID = 'RF') {
 	switch(classifierID,
 		'RF' = {
 			model <- randomForest(
-				formula = Class ~ .,
 				x = data[-which(colnames(data) == 'Class')],
 				y = data$Class)
 			},
 		'SVM' = {
-		model <- svm(
-			formula = Class ~ ., 
-			data = data, 
-			type = 'C-classification', 
-			kernel = 'linear',
-			scale = FALSE)
+			model <- svm(
+				x = data[-which(colnames(data) == 'Class')],
+				y = data$Class,
+				type = 'C-classification', 
+				kernel = 'linear',
+				scale = FALSE)
 			}
 	)
 	return (model)
@@ -28,7 +27,7 @@ general.fitAndPredict <- function(data.train, data.test, type = 'RF') {
 			cl = data.train$Class)
 	} else {
 		model <- general.fitClassifier(data.train, type)
-		prediction <- predict(model, newdata = data.test)
+		prediction <- predict(model, newdata = data.test[-which(colnames(data.test) == 'Class')])
 	}
 	return (prediction)
 }
@@ -37,16 +36,16 @@ general.callNoiseFilter <- function(data, filterId = 'HARF') {
 	cleanData <- NULL
 	switch (filterId,
 		'HARF' = {
-				cleanData <- HARF(Class ~ ., data)
+				cleanData <- HARF(data)
 			},
 		'AENN' = {
-				cleanData <- AENN(Class ~ ., data)
+				cleanData <- AENN(data)
 			},
 		'INFFC' = {
-				cleanData <- INFFC(Class ~ ., data)
+				cleanData <- INFFC(data)
 			},
 		'ENG' = {
-				cleanData <- ENG(Class ~ ., data)
+				cleanData <- ENG(data)
 			}
 		)
 	return (cleanData)

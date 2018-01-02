@@ -79,7 +79,7 @@ for (datasetID in 1:nrow(config.DATASET_SEQ)) {
 			for (noiseFilterID in config.NOISEFILTER_SEQ) {
 	
 				# Call the noise filter here.
-				filterResult <- general.callNoiseFilter(smotedTrainSet.noise$data, noiseFilterID)
+				filterResult <- general.callNoiseFilter(smotedTrainSet.noise$data, noiseFilterID, config.DATASET_SEQ[datasetID, 2])
 
 				for (classifierID in config.CLASSIFIER_SEQ) {
 					# Here all the three different accuracies are gotten. It is not safe to make any assumptions of
