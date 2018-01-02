@@ -11,7 +11,7 @@ The corrupted dataset is feed into each noise filter at a time, expecting that t
 To verify the performance of each noise filter, different predictive models are fit with the original dataset, the corrupted dataset and the filtered dataset, and these three accuracies got to be are compared.
 
 # Technical details:
-The experiment is reproducible, because the random seed is fixed with the arbitrarily selected '101010' value, wich means that all script run should hold the same results. 
+The experiment is reproducible, because the random seed is fixed with the arbitrarily selected '101010' value, which means that all script runs should hold the same results. 
 
 If you're interested on the results, just check out the 'results' subdirectory.
 
