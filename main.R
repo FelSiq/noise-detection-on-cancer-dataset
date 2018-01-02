@@ -23,6 +23,7 @@
 source('./src/LPNoiseInputation.R')
 source('./src/config.R')
 source('./src/generalFunctions.R')
+source('./src/aenn.R')
 
 for (datasetID in 1:nrow(config.DATASET_SEQ)) {
 	
@@ -53,6 +54,7 @@ for (datasetID in 1:nrow(config.DATASET_SEQ)) {
 	for (i in 1:config.FOLDS_NUM_CROSS_VALIDATION) {
 		set.train <- subset(dataset, i != kpartition)
 		set.test <- subset(dataset, i == kpartition)
+
 		for (smoteEnabled in config.SMOTE_SEQ) {
 			# SMOTE is a technique to balance the classes on the dataset. On this binary scenario, it does
 			# combine undersampling (i.e some instances are ignored) of the majority class with oversampling 
@@ -65,23 +67,20 @@ for (datasetID in 1:nrow(config.DATASET_SEQ)) {
 				smotedTrainSet$Class <- aux$Y
 				rm(aux)
 				gc()
-			} else {
-				# If SMOTE is not used, the the 'smotedTrainSet' is just a copy of the set.train.
-				smotedTrainSet <- set.train
 			}
-	
+			
 			# Here comes the artificial noise input. The 'random' method is used, where all instances have a
 			# fixed probability of getting the class label exchanged. On a deeper analysis, different noise
 			# input ratio may be used (for example, 0.05, 0.1, 0.2 and 0.4), because some models may perform 
 			# much better with less noise, while others are more noise resistent. In this work, as you may see, 
 			# only a fixed noise input ration is used, and it is specified @ "./src/config.R".
-			smotedTrainSet.noise <- rand(smotedTrainSet, config.ERROR_INPUT_RATE)
+			smotedTrainSet.noise <- rand(if (smoteEnabled) smotedTrainSet else set.train, config.ERROR_INPUT_RATE)
 	
 			for (noiseFilterID in config.NOISEFILTER_SEQ) {
 	
 				# Call the noise filter here.
 				filterResult <- general.callNoiseFilter(smotedTrainSet.noise$data, noiseFilterID)
-	
+
 				for (classifierID in config.CLASSIFIER_SEQ) {
 					# Here all the three different accuracies are gotten. It is not safe to make any assumptions of
 					# the results beforehand, but the expected pattern is predictionsNoise <= predictionsFiltered <= predictionsOriginal.
@@ -91,7 +90,7 @@ for (datasetID in 1:nrow(config.DATASET_SEQ)) {
 
 					# Please note that the confusion matrix of the caret package gives much more metadata than the accuracy value,
 					# so a deeper analysis could take other statistic values into account.
-					predictionsOriginal <- general.fitAndPredict(smotedTrainSet, set.test, classifierID)
+					predictionsOriginal <- general.fitAndPredict(if (smoteEnabled) smotedTrainSet else set.train, set.test, classifierID)
 					accOriginal <- caret::confusionMatrix(predictionsOriginal, set.test$Class)$overall[1]
 	
 					predictionsNoise <- general.fitAndPredict(smotedTrainSet.noise$data, set.test, classifierID)
@@ -110,7 +109,7 @@ for (datasetID in 1:nrow(config.DATASET_SEQ)) {
 
 # On './src/config.R', a output file is specified to append all results.
 # The empty sink() call make the future outputs goes into the 'stdout' again.
-sink()
+sink(NULL)
 # ----------------------------------------------
 # END OF THE SCRIPT.
 # ----------------------------------------------
