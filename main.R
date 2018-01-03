@@ -25,13 +25,14 @@ source('./src/config.R')
 source('./src/generalFunctions.R')
 source('./src/aenn.R')
 
-for (datasetID in 1:nrow(config.DATASET_SEQ)) {
+n <- min(length(config.DATASET_SEQ$datasetName), length(config.DATASET_SEQ$datasetType))
+for (datasetID in 1:n) {
 	
-	dataset <- read.csv(paste('./datasets', config.DATASET_SEQ[datasetID, 1], sep='/'), sep = ' ')
+	dataset <- read.csv(paste('./datasets', config.DATASET_SEQ$datasetName[datasetID], sep='/'), sep = ' ')
 	
 	# The microarray data need a 'special' treatment, because the dataset is transposed and
 	# the class column is the first one (some script parts assume that it's the last one instead).
-	if (config.DATASET_SEQ[datasetID, 2] == 'Microarray') {
+	if (config.DATASET_SEQ$datasetType[datasetID] == 'Microarray') {
 		dataset <- as.data.frame(t(dataset))
 		colnames(dataset) <- c('Class', paste('X', seq(1, ncol(dataset) - 1), sep = ''))
 		dataset <- dataset[, c(2:(ncol(dataset)), 1)]
@@ -79,7 +80,7 @@ for (datasetID in 1:nrow(config.DATASET_SEQ)) {
 			for (noiseFilterID in config.NOISEFILTER_SEQ) {
 	
 				# Call the noise filter here.
-				filterResult <- general.callNoiseFilter(smotedTrainSet.noise$data, noiseFilterID, config.DATASET_SEQ[datasetID, 2])
+				filterResult <- general.callNoiseFilter(smotedTrainSet.noise$data, noiseFilterID, config.DATASET_SEQ$datasetType[datasetID])
 
 				for (classifierID in config.CLASSIFIER_SEQ) {
 					# Here all the three different accuracies are gotten. It is not safe to make any assumptions of
@@ -99,7 +100,7 @@ for (datasetID in 1:nrow(config.DATASET_SEQ)) {
 					predictionsFiltered <- general.fitAndPredict(filterResult$cleanData, set.test, classifierID)
 					accFiltered <- caret::confusionMatrix(predictionsFiltered, set.test$Class)$overall[1]
 	
-					cat(date(), i, config.DATASET_SEQ[datasetID, 1], classifierID, noiseFilterID, 
+					cat(date(), i, config.DATASET_SEQ$datasetName[datasetID], classifierID, noiseFilterID, 
 						smoteEnabled, accOriginal, accNoise, accFiltered, '\n', sep='|')
 				}
 			}

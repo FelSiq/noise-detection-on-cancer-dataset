@@ -28,40 +28,59 @@ library(NoiseFiltersR) # For noise filters
 library(unbalanced) # For SMOTE (treatment of unbalanced dataset)
 library(caret) # For a good confusion matrix
 
-config.DATASET_SEQ <- t(matrix(c(
-		c('KICH.mirnaseq.txt', 'Micro-RNA'),
-		c('LUAD.mirnaseq.txt', 'Micro-RNA'),
-		c('THCA.mirnaseq.txt', 'Micro-RNA'),
-		c('BRCA.mirnaseq.txt', 'Micro-RNA'),
-		c('dataset_lymphoma_shipp.txt', 'Microarray'),
-		c('dataset_adrenal_dahia.txt', 'Microarray'),
-		c('dataset_mixed_chowdary.txt', 'Microarray'),
-		c('dataset_colon_alon.txt', 'Microarray'),
-		c('dataset_prostate_singh.txt', 'Microarray')
-	), 2, 10))
+config.DATASET_SEQ <- list()
+
+config.DATASET_SEQ$datasetName <- c(
+	'CHOL.rnaseqv2.txt', 
+	'LUAD.rnaseqv2.txt', 
+	'READ.rnaseqv2.txt', 
+	'KICH.rnaseqv2.txt', 
+	'THCA.rnaseqv2.txt')
+config.DATASET_SEQ$datasetType <- c(
+	'RNA-Seq',
+	'RNA-Seq',
+	'RNA-Seq',
+	'RNA-Seq',
+	'RNA-Seq')
+
 config.CLASSIFIER_SEQ <- c('KNN', 'SVM', 'RF')
-config.NOISEFILTER_SEQ <- c('INFFC')
+config.NOISEFILTER_SEQ <- c('AENN')
 
 DEBUG = TRUE 
 if (!DEBUG) {
 	# Initial experiment setup
-	config.DATASET_SEQ <- t(matrix(c(
-		c('CHOL.mirnaseq.txt', 'Micro-RNA'),
-		c('KICH.mirnaseq.txt', 'Micro-RNA'),
-		c('LUAD.mirnaseq.txt', 'Micro-RNA'),
-		c('THCA.mirnaseq.txt', 'Micro-RNA'),
-		c('BRCA.mirnaseq.txt', 'Micro-RNA'),
-		c('dataset_lymphoma_shipp.txt', 'Microarray'),
-		c('dataset_adrenal_dahia.txt', 'Microarray'),
-		c('dataset_mixed_chowdary.txt', 'Microarray'),
-		c('dataset_colon_alon.txt', 'Microarray'),
-		c('dataset_prostate_singh.txt', 'Microarray'),
-		c('CHOL.rnaseqv2.txt', 'RNA-Seq'),
-		c('LUAD.rnaseqv2.txt', 'RNA-Seq'),
-		c('READ.rnaseqv2.txt', 'RNA-Seq'),
-		c('KICH.rnaseqv2.txt', 'RNA-Seq'),
-		c('THCA.rnaseqv2.txt', 'RNA-Seq')),
-		2, 15))
+	config.DATASET_SEQ$datasetName <- c(
+		'CHOL.mirnaseq.txt', 
+		'KICH.mirnaseq.txt', 
+		'LUAD.mirnaseq.txt', 
+		'THCA.mirnaseq.txt', 
+		'BRCA.mirnaseq.txt', 
+		'dataset_lymphoma_shipp.txt', 
+		'dataset_adrenal_dahia.txt', 
+		'dataset_mixed_chowdary.txt', 
+		'dataset_colon_alon.txt', 
+		'dataset_prostate_singh.txt', 
+		'CHOL.rnaseqv2.txt', 
+		'LUAD.rnaseqv2.txt', 
+		'READ.rnaseqv2.txt', 
+		'KICH.rnaseqv2.txt', 
+		'THCA.rnaseqv2.txt')
+	config.DATASET_SEQ$datasetType <- c(
+		'Micro-RNA',
+		'Micro-RNA',
+		'Micro-RNA',
+		'Micro-RNA',
+		'Micro-RNA',
+		'Microarray',
+		'Microarray',
+		'Microarray',
+		'Microarray',
+		'Microarray',
+		'RNA-Seq',
+		'RNA-Seq',
+		'RNA-Seq',
+		'RNA-Seq',
+		'RNA-Seq')
 	# This is the sequence which the choosen classifiers will be called, for each dataset
 	config.CLASSIFIER_SEQ <- c('RF', 'SVM', 'KNN')
 	# Sequence of Noise filters, for each classifier
