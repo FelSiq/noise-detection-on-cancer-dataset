@@ -27,24 +27,9 @@ source('./src/aenn.R')
 
 n <- min(length(config.DATASET_SEQ$datasetName), length(config.DATASET_SEQ$datasetType))
 for (datasetID in 1:n) {
-	
-	dataset <- read.csv(paste('./datasets', config.DATASET_SEQ$datasetName[datasetID], sep='/'), sep = ' ')
-	
-	# The microarray data need a 'special' treatment, because the dataset is transposed and
-	# the class column is the first one (some script parts assume that it's the last one instead).
-	if (config.DATASET_SEQ$datasetType[datasetID] == 'Microarray') {
-		dataset <- as.data.frame(t(dataset))
-		colnames(dataset) <- c('Class', paste('X', seq(1, ncol(dataset) - 1), sep = ''))
-		dataset <- dataset[, c(2:(ncol(dataset)), 1)]
-	} else {
-		colnames(dataset)[ncol(dataset)] <- 'Class'
-	}
-	
-	# Factorizing the class label to the a binary factor-type column. The majority class should be
-	# always the 0 factor, while the minority, of course, factor 1. This is a requeriment of SMOTE.
-	labels <- unique(dataset$Class)
-	majorityLabel <- ifelse(sum(dataset$Class == labels[1]) >= length(dataset$Class)/2, 1, 2)
-	dataset$Class <- factor(ifelse(dataset$Class == labels[majorityLabel], 0, 1))
+	dataset <- general.getDataset(
+		filepath = paste('./datasets', config.DATASET_SEQ$datasetName[datasetID], sep = '/'), 
+		dataType = config.DATASET_SEQ$datasetType[datasetID])
 	
 	# This is the partitions of the k-fold cross validation. Please note that the size of each
 	# partition is not the same, but with approximate size.
@@ -78,9 +63,11 @@ for (datasetID in 1:n) {
 			smotedTrainSet.noise <- rand(if (smoteEnabled) smotedTrainSet else set.train, config.ERROR_INPUT_RATE)
 	
 			for (noiseFilterID in config.NOISEFILTER_SEQ) {
-	
 				# Call the noise filter here.
-				filterResult <- general.callNoiseFilter(smotedTrainSet.noise$data, noiseFilterID, config.DATASET_SEQ$datasetType[datasetID])
+				filterResult <- general.callNoiseFilter(
+					data = smotedTrainSet.noise$data, 
+					whichFilter = noiseFilterID, 
+					dataType = config.DATASET_SEQ$datasetType[datasetID])
 
 				for (classifierID in config.CLASSIFIER_SEQ) {
 					# Here all the three different accuracies are gotten. It is not safe to make any assumptions of
@@ -91,13 +78,22 @@ for (datasetID in 1:n) {
 
 					# Please note that the confusion matrix of the caret package gives much more metadata than the accuracy value,
 					# so a deeper analysis could take other statistic values into account.
-					predictionsOriginal <- general.fitAndPredict(if (smoteEnabled) smotedTrainSet else set.train, set.test, classifierID)
+					predictionsOriginal <- general.fitAndPredict(
+						data.train = if (smoteEnabled) smotedTrainSet else set.train, 
+						data.test = set.test, 
+						whichClassifier = classifierID)
 					accOriginal <- caret::confusionMatrix(predictionsOriginal, set.test$Class)$overall[1]
 	
-					predictionsNoise <- general.fitAndPredict(smotedTrainSet.noise$data, set.test, classifierID)
+					predictionsNoise <- general.fitAndPredict(
+						data.train = smotedTrainSet.noise$data, 
+						data.test = set.test, 
+						whichClassifier = classifierID)
 					accNoise <- caret::confusionMatrix(predictionsNoise, set.test$Class)$overall[1]
 	
-					predictionsFiltered <- general.fitAndPredict(filterResult$cleanData, set.test, classifierID)
+					predictionsFiltered <- general.fitAndPredict(
+						data.train = filterResult$cleanData, 
+						data.test = set.test, 
+						whichClassifier = classifierID)
 					accFiltered <- caret::confusionMatrix(predictionsFiltered, set.test$Class)$overall[1]
 	
 					cat(date(), i, config.DATASET_SEQ$datasetName[datasetID], classifierID, noiseFilterID, 
@@ -108,9 +104,7 @@ for (datasetID in 1:n) {
 	}
 }
 
-# On './src/config.R', a output file is specified to append all results.
-# The empty sink() call make the future outputs goes into the 'stdout' again.
-sink(NULL)
+source('./src/cleanOut.R')
 # ----------------------------------------------
 # END OF THE SCRIPT.
 # ----------------------------------------------
