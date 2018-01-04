@@ -2,15 +2,15 @@
 # INFORMATION
 # ---------------------------------------
 # The purpose of this auxiliary script is to compile all results got on the main experiment,
-# and turn it in the latex code specific to my relatory. The idea is not to made the most optimal script,
-# but the script that produce a output which makes possible a copy-pasting from output file direct to the relatory.
+# and turn it in the latex code specific to my report. The idea is not to made the most optimal script,
+# but the script that produce a output which makes possible a copy-pasting from output file direct to the report.
 # ---------------------------------------
 
 # ---------------------------------------
 metadataPathList <- list.files(pattern = '.*\\.dat', recursive = TRUE)
 sink(file = 'metadataProcessed.out', append = TRUE)
 
-# The order of the configuration below follows strictly the pattern on my relatory and does matter.
+# The order of the configuration below follows strictly the pattern on my report and does matter.
 config.SMOTE_SEQ <- c(FALSE, TRUE)
 config.CLASSIFIER_SEQ <- c('KNN', 'RF', 'SVM')
 config.NOISEFILTER_SEQ <- c('HARF', 'AENN', 'INFFC', 'ENG')
