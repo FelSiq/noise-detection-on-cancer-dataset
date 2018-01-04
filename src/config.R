@@ -12,13 +12,6 @@
 #	6) Input rate of artificial noise
 #	7) Output file to save results
 # ===================================================================
-
-# A custom seed will be used to ensure experiment replication
-set.seed(101010)
-
-# Set default output file
-sink(file = 'NoiseResults.dat', append = TRUE)
-
 # Load all the necessary packages for this test
 library(caTools) # For data splitting
 library(randomForest) # For Random Forest
@@ -27,6 +20,17 @@ library(class) # For knn
 library(NoiseFiltersR) # For noise filters
 library(unbalanced) # For SMOTE (treatment of unbalanced dataset)
 library(caret) # For a good confusion matrix
+library(parallel)
+
+# Specify if parallel environment should be used on the script run
+config.PARALLEL_SETUP <- TRUE
+config.NO_CORES <- detectCores() - 1
+
+# A custom seed will be used to ensure experiment replication
+config.RANDOM_SEED <- 101010
+
+# Set default output file
+sink(file = 'NoiseResults.dat', append = TRUE)
 
 config.DATASET_SEQ <- list()
 
