@@ -1,2 +1,3 @@
 datasets/
 NoiseResults.dat
+results/*.out
