@@ -9,7 +9,8 @@
 
 # On './src/config.R', a output file is specified to append all results.
 # The empty sink() call make the future outputs goes into the 'stdout' again.
-sink(NULL)
+sink(type="message")
+sink()
 
 if (config.PARALLEL_SETUP) {
 	stopCluster(par.cluster)

@@ -1,15 +1,15 @@
-general.fitClassifier <- function(data, whichClassifier = 'RF') {
+general.fitClassifier <- function(data.train, whichClassifier = 'RF') {
 	model <- NULL
 	switch(whichClassifier,
 		'RF' = {
-			model <- randomForest(
-				x = data[-which(colnames(data) == 'Class')],
-				y = data$Class)
+			model <- randomForest::randomForest(
+				x = data.train[-which(colnames(data.train) == 'Class')],
+				y = data.train$Class)
 			},
 		'SVM' = {
-			model <- svm(
-				x = data[-which(colnames(data) == 'Class')],
-				y = data$Class,
+			model <- e1071::svm(
+				x = data.train[-which(colnames(data.train) == 'Class')],
+				y = data.train$Class,
 				type = 'C-classification', 
 				kernel = 'linear',
 				scale = FALSE)
@@ -21,7 +21,7 @@ general.fitClassifier <- function(data, whichClassifier = 'RF') {
 general.fitAndPredict <- function(data.train, data.test, whichClassifier = 'RF') {
 	prediction <- NULL
 	if (whichClassifier == 'KNN') {
-		prediction <- knn(
+		prediction <- class::knn(
 			train = data.train[-which(colnames(data.train) == 'Class')], 
 			test = data.test[-which(colnames(data.test) == 'Class')],
 			cl = data.train$Class)

@@ -23,14 +23,14 @@ library(caret) # For a good confusion matrix
 library(parallel)
 
 # Specify if parallel environment should be used on the script run
-config.PARALLEL_SETUP <- TRUE
+config.PARALLEL_SETUP <- FALSE
 config.NO_CORES <- detectCores() - 1
 
 # A custom seed will be used to ensure experiment replication
 config.RANDOM_SEED <- 101010
 
 # Set default output file
-sink(file = 'NoiseResults.dat', append = TRUE)
+sink(file = 'noiseResults.out', append = TRUE)
 
 config.DATASET_SEQ <- list()
 

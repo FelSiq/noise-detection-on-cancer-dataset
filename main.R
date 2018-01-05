@@ -24,6 +24,7 @@ source('./src/LPNoiseInputation.R')
 source('./src/config.R')
 source('./src/generalFunctions.R')
 source('./src/aenn.R')
+source('./src/parallelSetup.R')
 
 n <- min(length(config.DATASET_SEQ$datasetName), length(config.DATASET_SEQ$datasetType))
 for (datasetID in 1:n) {
@@ -79,7 +80,7 @@ for (datasetID in 1:n) {
 					# Please note that the confusion matrix of the caret package gives much more metadata than the accuracy value,
 					# so a deeper analysis could take other statistic values into account.
 					predictionsOriginal <- general.fitAndPredict(
-						data.train = if (smoteEnabled) smotedTrainSet else set.train, 
+						data.train = (if (smoteEnabled) smotedTrainSet else set.train), 
 						data.test = set.test, 
 						whichClassifier = classifierID)
 					accOriginal <- caret::confusionMatrix(predictionsOriginal, set.test$Class)$overall[1]
