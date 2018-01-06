@@ -36,7 +36,7 @@ general.callNoiseFilter <- function(data, whichFilter = 'HARF', dataType = 'RNA-
 	cleanData <- NULL
 	switch (whichFilter,
 		'HARF' = {
-				cleanData <- HARF(data)
+				cleanData <- NoiseFiltersR::HARF(data)
 			},
 		'AENN' = {
 				# RNA-Seq have too much predictive variables, which often causes stack overflow
@@ -46,16 +46,21 @@ general.callNoiseFilter <- function(data, whichFilter = 'HARF', dataType = 'RNA-
 				# with the RNA-Seq dataset type experiments. The results are, in general, very
 				# similar, and the accuracies should not differ too much between the two implementations.
 				if (dataType != 'RNA-Seq') {
-					cleanData <- AENN(data)
+					cleanData <- NoiseFiltersR::AENN(data)
 				} else {
 					cleanData <- filter.AENN(data)
 				}
 			},
 		'INFFC' = {
-				cleanData <- INFFC(data)
+				# This is exactly the same issue as stated above, but this time with RNA-Seq and microarray.
+				if (dataType != 'Micro-RNA') {
+					cleanData <- modified.INFFC(data)
+				} else {
+					cleanData <- NoiseFiltersR::INFFC(data)
+				}
 			},
 		'ENG' = {
-				cleanData <- ENG(data)
+				cleanData <- NoiseFiltersR::ENG(data)
 			}
 		)
 	return (cleanData)

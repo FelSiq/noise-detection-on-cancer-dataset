@@ -10,50 +10,59 @@
 # the same, but are quite similar.
 # --------------------------------------------
 
-personal.getKNN <- function(data, trainIndexes, k = 7, classColumn = ncol(data), SCALE = TRUE) {
-    scaledData <- if (SCALE) scale(data[-classColumn]) else data[-classColumn]
+personal.getKNN <- function(train, test, k = 7, classColumn = which(colnames(train) == 'class'), SCALE = TRUE) {
+    train <- if (SCALE) scale(train[-classColumn]) else train[-classColumn]
+    test <- if (SCALE) scale(test[-classColumn]) else test[-classColumn]
 
-    knn <- matrix(nrow = nrow(data[-trainIndexes,]), ncol = k)
+    knn <- matrix(nrow = nrow(test), ncol = k)
 
-    m <- 1
-    for (i in which(!trainIndexes)) {
+    for (i in 1:nrow(test)) {
         dist <- vector()
-        n <- 1
-        for (j in which(trainIndexes)) {
-            dist[n] <- sum((scaledData[i, ] - scaledData[j, ])^2.0)^0.5 
-            n <- n + 1
+        for (j in 1:nrow(train)) {
+            dist[j] <- sum((test[i, ] - train[j, ])^2.0)^0.5 
         }
-        knn[m,] <- sort.list(dist)[2:(k + 1)]
-        m <- m + 1
+        knn[i,] <- sort.list(dist)[2:(k + 1)]
     }
 
-    return (knn)
+    res <- list()
+    res$C <- knn
+
+    return (res)
 }
+
+modified.Clean <- function (data, NoisyIndexes, k, index) 
+{
+    neighborsIndexes <- personal.getKNN(train = data[-index, 
+        ], test = data[index, ], k = k)$C
+    n <- sum(sapply(neighborsIndexes, function(i) {
+        i %in% NoisyIndexes
+    }))
+    (k + ifelse(index %in% NoisyIndexes, 1, -1) * (n - k))/(2 * 
+        k)
+}
+
 
 modified.Confidence <- function (data, NoisyIndexes, k, index) 
 {
     t <- sum(sapply(NoisyIndexes, function(i) {
-        index %in% kknn::kknn(class ~ ., train = data[-i, ], 
+        index %in% personal.getKNN(train = data[-i, ], 
             test = data[i, ], k = k)$C
     }))
     1/sqrt(1 + t^2)
 }
 
+
 modified.NoiseScore <- function (data, NoisyIndexes, k, indexToScore) 
 {
-    classColumn <- which(colnames(data) == 'class')
-
-    neighborsIndexes <- personal.getKNN(
-        data = data,
-        trainSet = indexToScore,
-        classColumn = classColumn)
-
+    neighborsIndexes <- personal.getKNN(train = data[-indexToScore, 
+        ], test = data[indexToScore, ], k = k)$C
     sum(sapply(neighborsIndexes, function(i) {
-        modified.Confidence(data, NoisyIndexes, k, i) * Clean(data, NoisyIndexes, k, i) * 
-        ifelse(data[i, ]$class == data[indexToScore, ]$class, -1, 1)
-
+        modified.Confidence(data, NoisyIndexes, k, i) * modified.Clean(data, NoisyIndexes, 
+            k, i) * ifelse(data[i, ]$class == data[indexToScore, 
+            ]$class, -1, 1)
     }))/k
 }
+
 
 modified.FusionClassifiers <- function (data, trainingIndexes, majThreshold, returnNoisy = FALSE) 
 {
@@ -71,12 +80,17 @@ modified.FusionClassifiers <- function (data, trainingIndexes, majThreshold, ret
             k = 3)
     })
     
-    invisible(utils::capture.output(predLOG <- predict(nnet::multinom(
-        class ~ ., 
-        data[trainingIndexes, ]), 
-        data)))
+    # invisible(utils::capture.output(predLOG <- predict(nnet::multinom(
+    #     class ~ ., 
+    #     data[trainingIndexes, ]), 
+    #     data)))
+
+	predSVM <- predict(e1071::svm(
+        x = data[trainingIndexes, -classColumn], 
+        y = data[trainingIndexes, classColumn], scale = FALSE), data[-classColumn])
     
-    votes <- (predC50 != data$class) + (pred3NN != data$class) + (predLOG != data$class)
+    # votes <- (predC50 != data$class) + (pred3NN != data$class) + (predLOG != data$class)
+    votes <- (predC50 != data$class) + (pred3NN != data$class) + (predSVM != data$class)
     
     if (returnNoisy) {
         return(which(votes >= majThreshold))
@@ -155,5 +169,3 @@ modified.INFFC <- function (x, consensus = FALSE, p = 0.01, s = 3, k = 5, thresh
     class(ret) <- "filter"
     return(ret)
 }
-
-modified.INFFC(iris)

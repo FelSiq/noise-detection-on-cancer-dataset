@@ -25,6 +25,7 @@ source('./src/config.R')
 source('./src/generalFunctions.R')
 source('./src/aenn.R')
 source('./src/parallelSetup.R')
+source('./src/INFFCRefactorization.R')
 
 n <- min(length(config.DATASET_SEQ$datasetName), length(config.DATASET_SEQ$datasetType))
 for (datasetID in 1:n) {

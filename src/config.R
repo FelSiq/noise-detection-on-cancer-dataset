@@ -30,7 +30,7 @@ config.NO_CORES <- detectCores() - 1
 config.RANDOM_SEED <- 101010
 
 # Set default output file
-sink(file = 'noiseResults.out', append = TRUE)
+# sink(file = 'noiseResults.out', append = TRUE)
 
 config.DATASET_SEQ <- list()
 
@@ -39,16 +39,26 @@ config.DATASET_SEQ$datasetName <- c(
 	'LUAD.rnaseqv2.txt', 
 	'READ.rnaseqv2.txt', 
 	'KICH.rnaseqv2.txt', 
-	'THCA.rnaseqv2.txt')
+	'THCA.rnaseqv2.txt',
+	'dataset_lymphoma_shipp.txt', 
+	'dataset_adrenal_dahia.txt', 
+	'dataset_mixed_chowdary.txt', 
+	'dataset_colon_alon.txt', 
+	'dataset_prostate_singh.txt')
 config.DATASET_SEQ$datasetType <- c(
 	'RNA-Seq',
 	'RNA-Seq',
 	'RNA-Seq',
 	'RNA-Seq',
-	'RNA-Seq')
+	'RNA-Seq',
+	'Microarray',
+	'Microarray',
+	'Microarray',
+	'Microarray',
+	'Microarray')
 
 config.CLASSIFIER_SEQ <- c('KNN', 'SVM', 'RF')
-config.NOISEFILTER_SEQ <- c('AENN')
+config.NOISEFILTER_SEQ <- c('INFFC')
 
 DEBUG = TRUE 
 if (!DEBUG) {
