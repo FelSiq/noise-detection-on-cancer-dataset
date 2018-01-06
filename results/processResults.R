@@ -8,13 +8,11 @@
 
 # ---------------------------------------
 metadataPathList <- list.files(pattern = '.*\\.dat', recursive = TRUE)
-sink(file = 'metadataProcessed.out', append = TRUE)
 
 # The order of the configuration below follows strictly the pattern on my report and does matter.
 config.SMOTE_SEQ <- c(FALSE, TRUE)
 config.CLASSIFIER_SEQ <- c('KNN', 'RF', 'SVM')
 config.NOISEFILTER_SEQ <- c('HARF', 'AENN', 'INFFC', 'ENG')
-config.PRINTSEQ <- c('Original', 'Corrupted', 'Filtered')
 # ---------------------------------------
 getMetadata <- function(path) {
 	metadata <- read.table(path, sep='|')
@@ -45,6 +43,43 @@ signifPlaces <- function(x) {
 }
 
 # ---------------------------------------
+# config.PRINTSEQ <- c('Original', 'Corrupted')
+# sink(file = 'originalAndCorrAcc.out', append = TRUE)
+# for (s in config.SMOTE_SEQ) {
+# 	charAsciiIndex <- 65
+# 	cat('@', s, ':\n')
+# 	for (r in metadataPathList) {
+# 		metadata <- getMetadata(r)
+# 		cat('\\colcell\\dados', intToUtf8(charAsciiIndex), 'Nome & ',sep='')
+# 		charAsciiIndex <- charAsciiIndex + 1
+# 		for (p in config.PRINTSEQ) {
+# 			for (c in config.CLASSIFIER_SEQ) {
+
+# 			curMetadata <- metadata[metadata$SMOTE == s & metadata$Classifier == c,]
+
+# 			if (nrow(curMetadata) > 0) {
+# 					if (p == 'Original') {
+# 						stdDevPredOriginal <- signif(sd(curMetadata$predOriginal), 1)
+# 						predOriginalPlaces <- signifPlaces(stdDevPredOriginal)
+# 						cat('$', round(mean(curMetadata$predOriginal), predOriginalPlaces), '\\pm', stdDevPredOriginal, '$ & ', sep='')
+# 					}
+# 					if (p == 'Corrupted') {
+# 						stdDevPredCorrupted <- signif(sd(curMetadata$predCorrupted), 1)
+# 						predCorruptedPlaces <- signifPlaces(stdDevPredCorrupted)
+# 						cat('$', round(mean(curMetadata$predCorrupted), predCorruptedPlaces), '\\pm', stdDevPredCorrupted, '$', sep='')
+							
+# 						if (c != 'SVM')
+# 							cat(' & ')
+# 					}
+# 				}
+# 			}
+# 		}
+# 		cat(' \\\\\n')
+# 	}
+# }
+
+config.PRINTSEQ <- c('Filtered', 'Diff')
+sink(file = 'filteredAcc.out', append = TRUE)
 for (s in config.SMOTE_SEQ) {
 	for (f in config.NOISEFILTER_SEQ) {
 		charAsciiIndex <- 65
@@ -59,20 +94,22 @@ for (s in config.SMOTE_SEQ) {
 				curMetadata <- metadata[metadata$Filter == f & metadata$SMOTE == s & metadata$Classifier == c,]
 
 				if (nrow(curMetadata) > 0) {
-						if (p == 'Original') {
-							stdDevPredOriginal <- signif(sd(curMetadata$predOriginal), 1)
-							predOriginalPlaces <- signifPlaces(stdDevPredOriginal)
-							cat('$', round(mean(curMetadata$predOriginal), predOriginalPlaces), '\\pm', stdDevPredOriginal, '$ & ', sep='')
-						}
-						if (p == 'Corrupted') {
-							stdDevPredCorrupted <- signif(sd(curMetadata$predCorrupted), 1)
-							predCorruptedPlaces <- signifPlaces(stdDevPredCorrupted)
-							cat('$', round(mean(curMetadata$predCorrupted), predCorruptedPlaces), '\\pm', stdDevPredCorrupted, '$ & ', sep='')
-						}
 						if (p == 'Filtered') {
 							stdDevPredFiltered <- signif(sd(curMetadata$predFiltered), 1)
 							predFilteredPlaces <- signifPlaces(stdDevPredFiltered)
-							cat('$', round(mean(curMetadata$predFiltered), predFilteredPlaces), '\\pm', stdDevPredFiltered, '$', sep='')
+
+							cat('$', round(mean(curMetadata$predFiltered), predFilteredPlaces), '\\pm', stdDevPredFiltered, '$ & ', sep='')
+						}
+						if (p == 'Diff') {
+							diffPred <- mean(curMetadata$predFiltered) - mean(curMetadata$predCorrupted)
+							diffStd <- signif(sd(curMetadata$predFiltered) + sd(curMetadata$predCorrupted), 1)
+							diffPlaces <- signifPlaces(diffStd)
+							
+							diffDisplay <- round(mean(diffPred), diffPlaces)
+							color <- if (diffDisplay - diffStd > 0) 'Blue' else if (diffDisplay + diffStd < 0) 'Red' else 'Gray'
+							cat('\\cellcolor{', color ,'} ', sep='')
+
+							cat('$', diffDisplay, '\\pm', diffStd, '$', sep='')
 
 							if (c != 'SVM')
 								cat(' & ')
@@ -85,6 +122,7 @@ for (s in config.SMOTE_SEQ) {
 		}
 	}
 }
+
 sink(NULL)
 # ---------------------------------------
 # END OF THE SCRIPT

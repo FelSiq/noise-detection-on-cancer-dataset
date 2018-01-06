@@ -30,12 +30,11 @@ config.NO_CORES <- detectCores() - 1
 config.RANDOM_SEED <- 101010
 
 # Set default output file
-# sink(file = 'noiseResults.out', append = TRUE)
+sink(file = 'noiseResults.out', append = TRUE)
 
 config.DATASET_SEQ <- list()
 
 config.DATASET_SEQ$datasetName <- c(
-	'CHOL.rnaseqv2.txt', 
 	'LUAD.rnaseqv2.txt', 
 	'READ.rnaseqv2.txt', 
 	'KICH.rnaseqv2.txt', 
@@ -46,7 +45,6 @@ config.DATASET_SEQ$datasetName <- c(
 	'dataset_colon_alon.txt', 
 	'dataset_prostate_singh.txt')
 config.DATASET_SEQ$datasetType <- c(
-	'RNA-Seq',
 	'RNA-Seq',
 	'RNA-Seq',
 	'RNA-Seq',
