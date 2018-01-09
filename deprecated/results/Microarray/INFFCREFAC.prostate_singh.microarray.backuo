@@ -1,0 +1,9 @@
+Tue Jan  9 17:41:20 2018|1|dataset_prostate_singh.txt|KNN|INFFC|FALSE|0.875|0.5625|0.5625|
+Tue Jan  9 17:41:20 2018|1|dataset_prostate_singh.txt|SVM|INFFC|FALSE|1|0.75|0.75|
+Tue Jan  9 17:41:26 2018|1|dataset_prostate_singh.txt|RF|INFFC|FALSE|0.9375|0.8125|0.75|
+Tue Jan  9 20:45:23 2018|1|dataset_prostate_singh.txt|KNN|INFFC|TRUE|1|0.9375|0.9375|
+Tue Jan  9 20:45:49 2018|1|dataset_prostate_singh.txt|SVM|INFFC|TRUE|1|0.6875|0.75|
+Tue Jan  9 20:46:21 2018|1|dataset_prostate_singh.txt|RF|INFFC|TRUE|1|0.9375|0.9375|
+Tue Jan  9 20:47:14 2018|2|dataset_prostate_singh.txt|KNN|INFFC|FALSE|0.7368421|0.6315789|0.6315789|
+Tue Jan  9 20:47:15 2018|2|dataset_prostate_singh.txt|SVM|INFFC|FALSE|0.8421053|0.7368421|0.7368421|
+Tue Jan  9 20:47:21 2018|2|dataset_prostate_singh.txt|RF|INFFC|FALSE|0.8947368|0.7368421|0.7368421|
