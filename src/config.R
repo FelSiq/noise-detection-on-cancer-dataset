@@ -35,20 +35,12 @@ sink(file = 'noiseResults.out', append = TRUE)
 config.DATASET_SEQ <- list()
 
 config.DATASET_SEQ$datasetName <- c(
-	'LUAD.rnaseqv2.txt', 
-	'READ.rnaseqv2.txt', 
-	'KICH.rnaseqv2.txt', 
-	'THCA.rnaseqv2.txt',
 	'dataset_lymphoma_shipp.txt', 
 	'dataset_adrenal_dahia.txt', 
 	'dataset_mixed_chowdary.txt', 
 	'dataset_colon_alon.txt', 
 	'dataset_prostate_singh.txt')
 config.DATASET_SEQ$datasetType <- c(
-	'RNA-Seq',
-	'RNA-Seq',
-	'RNA-Seq',
-	'RNA-Seq',
 	'Microarray',
 	'Microarray',
 	'Microarray',

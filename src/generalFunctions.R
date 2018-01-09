@@ -52,12 +52,7 @@ general.callNoiseFilter <- function(data, whichFilter = 'HARF', dataType = 'RNA-
 				}
 			},
 		'INFFC' = {
-				# This is exactly the same issue as stated above, but this time with RNA-Seq and microarray.
-				if (dataType != 'Micro-RNA') {
-					cleanData <- modified.INFFC(data)
-				} else {
-					cleanData <- NoiseFiltersR::INFFC(data)
-				}
+				cleanData <- NoiseFiltersR::INFFC(data)
 			},
 		'ENG' = {
 				cleanData <- NoiseFiltersR::ENG(data)
