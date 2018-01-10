@@ -19,7 +19,7 @@ library(e1071) # For SVM
 library(class) # For knn
 library(NoiseFiltersR) # For noise filters
 library(unbalanced) # For SMOTE (treatment of unbalanced dataset)
-library(caret) # For a good confusion matrix
+library(caret) # For a good confusion matrix and class balancing
 library(parallel)
 
 # Specify if parallel environment should be used on the script run
@@ -99,3 +99,5 @@ config.DATASPLIT_RATE <- 0.6
 config.ERROR_INPUT_RATE <- 0.2
 # Number of folds in the cross validation of the experiments
 config.FOLDS_NUM_CROSS_VALIDATION <- 5
+# Number of variables to be keep on the feature selection
+config.FT_SELECTION_KEEP_VARIABLE_NUM <- 850

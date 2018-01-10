@@ -23,7 +23,6 @@
 source('./src/LPNoiseInputation.R')
 source('./src/config.R')
 source('./src/generalFunctions.R')
-source('./src/aenn.R')
 source('./src/parallelSetup.R')
 
 n <- min(length(config.DATASET_SEQ$datasetName), length(config.DATASET_SEQ$datasetType))
@@ -42,6 +41,22 @@ for (datasetID in 1:n) {
 		set.train <- subset(dataset, i != kpartition)
 		set.test <- subset(dataset, i == kpartition)
 
+		# Feature selection on datasets that are not of type 'Micro-RNA'
+		if (config.DATASET_SEQ$datasetType[datasetID] != 'Micro-RNA') {
+			control <- rfeControl(functions = rfFuncs, method = 'cv', number = 10)
+			results <- rfe(
+				x = set.train[-which(colnames(set.train) == 'Class')],
+				y = set.train$Class,
+				rfeControl = control,
+				sizes = config.FT_SELECTION_KEEP_VARIABLE_NUM)
+			selectedAtt <- predictors(results)
+		} else {
+			selectedAtt <- colnames(set.train[-which(colnames(set.train) == 'Class')])
+		}
+
+		set.train <- set.train[selectedAtt]
+		set.test <- set.test[selectedAtt]
+
 		for (smoteEnabled in config.SMOTE_SEQ) {
 			# SMOTE is a technique to balance the classes on the dataset. On this binary scenario, it does
 			# combine undersampling (i.e some instances are ignored) of the majority class with oversampling 
@@ -49,7 +64,7 @@ for (datasetID in 1:n) {
 			# work: the class column must be a binary (0's and 1's) factor-type column, and the majority class
 			# is assumed corresponding the '0' factor.
 			if (smoteEnabled) {
-				aux <- ubSMOTE(dataset[-which(colnames(dataset) == 'Class')], dataset$Class)
+				aux <- ubSMOTE(set.train[-which(colnames(set.train) == 'Class')], set.train$Class)
 				smotedTrainSet <- data.frame(aux$X)
 				smotedTrainSet$Class <- aux$Y
 				rm(aux)

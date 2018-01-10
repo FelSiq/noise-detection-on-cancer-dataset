@@ -45,11 +45,7 @@ general.callNoiseFilter <- function(data, whichFilter = 'HARF', dataType = 'RNA-
 				# number of variables. The workaround is to use a personal implementation of AENN
 				# with the RNA-Seq dataset type experiments. The results are, in general, very
 				# similar, and the accuracies should not differ too much between the two implementations.
-				if (dataType != 'RNA-Seq') {
-					cleanData <- NoiseFiltersR::AENN(data)
-				} else {
-					cleanData <- filter.AENN(data)
-				}
+				cleanData <- NoiseFiltersR::AENN(data)
 			},
 		'INFFC' = {
 				cleanData <- NoiseFiltersR::INFFC(data)
