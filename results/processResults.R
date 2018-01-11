@@ -18,14 +18,10 @@ getMetadata <- function(path) {
 	metadata <- read.table(path, sep='|')
 	metadata <- metadata[-ncol(metadata)]
 
-	if (ncol(metadata) < 9) {
-		colnames(metadata) <- c('k-fold', 'Dataset', 'Classifier', 
-			'Filter', 'SMOTE', 'predOriginal', 'predCorrupted', 'predFiltered')
-		metadata$Time <- rep.int(NA, nrow(metadata))
-	} else {
-		colnames(metadata) <- c('Time', 'k-fold', 'Dataset', 'Classifier', 
-			'Filter', 'SMOTE', 'predOriginal', 'predCorrupted', 'predFiltered')
-	}
+	colnames(metadata) <- c('Time', 'k-fold', 'Dataset', 
+			'Classifier', 'Filter', 'SMOTE', 
+			'predOriginal', 'predCorrupted', 'predFiltered',
+			'PVOriginal', 'PVCorrupted', 'PVFiltered')
 	return (metadata)
 }
 
@@ -43,43 +39,43 @@ signifPlaces <- function(x) {
 }
 
 # ---------------------------------------
-# config.PRINTSEQ <- c('Original', 'Corrupted')
-# sink(file = 'originalAndCorrAcc.out', append = TRUE)
-# for (s in config.SMOTE_SEQ) {
-# 	charAsciiIndex <- 65
-# 	cat('@', s, ':\n')
-# 	for (r in metadataPathList) {
-# 		metadata <- getMetadata(r)
-# 		cat('\\colcell\\dados', intToUtf8(charAsciiIndex), 'Nome & ',sep='')
-# 		charAsciiIndex <- charAsciiIndex + 1
-# 		for (p in config.PRINTSEQ) {
-# 			for (c in config.CLASSIFIER_SEQ) {
+sink(file = 'originalAndCorrAcc.out', append = TRUE)
+config.PRINTSEQ <- c('Original', 'Corrupted')
+for (s in config.SMOTE_SEQ) {
+	charAsciiIndex <- 65
+	cat('@', s, ':\n')
+	for (r in metadataPathList) {
+		metadata <- getMetadata(r)
+		cat('\\colcell\\dados', intToUtf8(charAsciiIndex), 'Nome & ',sep='')
+		charAsciiIndex <- charAsciiIndex + 1
+		for (p in config.PRINTSEQ) {
+			for (c in config.CLASSIFIER_SEQ) {
 
-# 			curMetadata <- metadata[metadata$SMOTE == s & metadata$Classifier == c,]
+			curMetadata <- metadata[metadata$SMOTE == s & metadata$Classifier == c,]
 
-# 			if (nrow(curMetadata) > 0) {
-# 					if (p == 'Original') {
-# 						stdDevPredOriginal <- signif(sd(curMetadata$predOriginal), 1)
-# 						predOriginalPlaces <- signifPlaces(stdDevPredOriginal)
-# 						cat('$', round(mean(curMetadata$predOriginal), predOriginalPlaces), '\\pm', stdDevPredOriginal, '$ & ', sep='')
-# 					}
-# 					if (p == 'Corrupted') {
-# 						stdDevPredCorrupted <- signif(sd(curMetadata$predCorrupted), 1)
-# 						predCorruptedPlaces <- signifPlaces(stdDevPredCorrupted)
-# 						cat('$', round(mean(curMetadata$predCorrupted), predCorruptedPlaces), '\\pm', stdDevPredCorrupted, '$', sep='')
+			if (nrow(curMetadata) > 0) {
+					if (p == 'Original') {
+						stdDevPredOriginal <- signif(sd(curMetadata$predOriginal), 1)
+						predOriginalPlaces <- signifPlaces(stdDevPredOriginal)
+						cat('$', round(mean(curMetadata$predOriginal), predOriginalPlaces), '\\pm', stdDevPredOriginal, '$ & ', sep='')
+					}
+					if (p == 'Corrupted') {
+						stdDevPredCorrupted <- signif(sd(curMetadata$predCorrupted), 1)
+						predCorruptedPlaces <- signifPlaces(stdDevPredCorrupted)
+						cat('$', round(mean(curMetadata$predCorrupted), predCorruptedPlaces), '\\pm', stdDevPredCorrupted, '$', sep='')
 							
-# 						if (c != 'SVM')
-# 							cat(' & ')
-# 					}
-# 				}
-# 			}
-# 		}
-# 		cat(' \\\\\n')
-# 	}
-# }
+						if (c != 'SVM')
+							cat(' & ')
+					}
+				}
+			}
+		}
+		cat(' \\\\\n')
+	}
+}
 
-config.PRINTSEQ <- c('Filtered', 'Diff')
 sink(file = 'filteredAcc.out', append = TRUE)
+config.PRINTSEQ <- c('Filtered', 'Diff')
 for (s in config.SMOTE_SEQ) {
 	for (f in config.NOISEFILTER_SEQ) {
 		charAsciiIndex <- 65

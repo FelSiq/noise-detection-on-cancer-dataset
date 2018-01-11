@@ -54,8 +54,8 @@ for (datasetID in 1:n) {
 			selectedAtt <- colnames(set.train[-which(colnames(set.train) == 'Class')])
 		}
 
-		set.train <- set.train[selectedAtt]
-		set.test <- set.test[selectedAtt]
+		set.train <- set.train[c(selectedAtt, 'Class')]
+		set.test <- set.test[c(selectedAtt, 'Class')]
 
 		for (smoteEnabled in config.SMOTE_SEQ) {
 			# SMOTE is a technique to balance the classes on the dataset. On this binary scenario, it does
@@ -99,21 +99,27 @@ for (datasetID in 1:n) {
 						data.test = set.test, 
 						whichClassifier = classifierID)
 					accOriginal <- caret::confusionMatrix(predictionsOriginal, set.test$Class)$overall[1]
+					pValueOriginal <- caret::confusionMatrix(predictionsOriginal, set.test$Class)$overall[6]
 	
 					predictionsNoise <- general.fitAndPredict(
 						data.train = smotedTrainSet.noise$data, 
 						data.test = set.test, 
 						whichClassifier = classifierID)
 					accNoise <- caret::confusionMatrix(predictionsNoise, set.test$Class)$overall[1]
+					pValueNoise <- caret::confusionMatrix(predictionsNoise, set.test$Class)$overall[6]
 	
 					predictionsFiltered <- general.fitAndPredict(
 						data.train = filterResult$cleanData, 
 						data.test = set.test, 
 						whichClassifier = classifierID)
 					accFiltered <- caret::confusionMatrix(predictionsFiltered, set.test$Class)$overall[1]
+					pValueFiltered <- caret::confusionMatrix(predictionsFiltered, set.test$Class)$overall[6]
 	
-					cat(date(), i, config.DATASET_SEQ$datasetName[datasetID], classifierID, noiseFilterID, 
-						smoteEnabled, accOriginal, accNoise, accFiltered, '\n', sep='|')
+					cat(date(), i, config.DATASET_SEQ$datasetName[datasetID], 
+						classifierID, noiseFilterID, smoteEnabled, 
+						accOriginal, accNoise, accFiltered, 
+						pValueOriginal, pValueNoise, pValueFiltered, 
+						'\n', sep='|')
 				}
 			}
 		}

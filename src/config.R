@@ -34,21 +34,43 @@ sink(file = 'noiseResults.out', append = TRUE)
 
 config.DATASET_SEQ <- list()
 
+# Initial experiment setup
 config.DATASET_SEQ$datasetName <- c(
+	'CHOL.mirnaseq.txt', 
+	'KICH.mirnaseq.txt', 
+	'LUAD.mirnaseq.txt', 
+	'THCA.mirnaseq.txt', 
+	'BRCA.mirnaseq.txt', 
 	'dataset_lymphoma_shipp.txt', 
 	'dataset_adrenal_dahia.txt', 
 	'dataset_mixed_chowdary.txt', 
 	'dataset_colon_alon.txt', 
-	'dataset_prostate_singh.txt')
+	'dataset_prostate_singh.txt', 
+	'CHOL.rnaseqv2.txt', 
+	'LUAD.rnaseqv2.txt', 
+	'READ.rnaseqv2.txt', 
+	'KICH.rnaseqv2.txt', 
+	'THCA.rnaseqv2.txt')
 config.DATASET_SEQ$datasetType <- c(
+	'Micro-RNA',
+	'Micro-RNA',
+	'Micro-RNA',
+	'Micro-RNA',
+	'Micro-RNA',
 	'Microarray',
 	'Microarray',
 	'Microarray',
 	'Microarray',
-	'Microarray')
-
-config.CLASSIFIER_SEQ <- c('KNN', 'SVM', 'RF')
-config.NOISEFILTER_SEQ <- c('INFFC')
+	'Microarray',
+	'RNA-Seq',
+	'RNA-Seq',
+	'RNA-Seq',
+	'RNA-Seq',
+	'RNA-Seq')
+# This is the sequence which the choosen classifiers will be called, for each dataset
+config.CLASSIFIER_SEQ <- c('RF', 'SVM', 'KNN')
+# Sequence of Noise filters, for each classifier
+config.NOISEFILTER_SEQ <- c('HARF', 'AENN', 'INFFC')
 
 DEBUG = TRUE 
 if (!DEBUG) {
@@ -88,7 +110,7 @@ if (!DEBUG) {
 	# This is the sequence which the choosen classifiers will be called, for each dataset
 	config.CLASSIFIER_SEQ <- c('RF', 'SVM', 'KNN')
 	# Sequence of Noise filters, for each classifier
-	config.NOISEFILTER_SEQ <- c('HARF', 'AENN', 'INFFC', 'ENG')
+	config.NOISEFILTER_SEQ <- c('HARF', 'AENN', 'INFFC')
 }
 
 # Turn SMOTE OFF and ON, for each noise filter
@@ -101,3 +123,5 @@ config.ERROR_INPUT_RATE <- 0.2
 config.FOLDS_NUM_CROSS_VALIDATION <- 5
 # Number of variables to be keep on the feature selection
 config.FT_SELECTION_KEEP_VARIABLE_NUM <- 850
+# k of kNN
+config.KNN_K <- 5
