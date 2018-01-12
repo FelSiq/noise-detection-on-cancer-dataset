@@ -122,6 +122,6 @@ config.ERROR_INPUT_RATE <- 0.2
 # Number of folds in the cross validation of the experiments
 config.FOLDS_NUM_CROSS_VALIDATION <- 5
 # Number of variables to be keep on the feature selection
-config.FT_SELECTION_KEEP_VARIABLE_NUM <- 850
+config.FT_SELECTION_KEPT_VARIABLE_NUM <- c(800, 850, 900, 950)
 # k of kNN
 config.KNN_K <- 5

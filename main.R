@@ -48,7 +48,7 @@ for (datasetID in 1:n) {
 				x = set.train[-which(colnames(set.train) == 'Class')],
 				y = set.train$Class,
 				rfeControl = control,
-				sizes = config.FT_SELECTION_KEEP_VARIABLE_NUM)
+				sizes = config.FT_SELECTION_KEPT_VARIABLE_NUM)
 			selectedAtt <- predictors(results)
 		} else {
 			selectedAtt <- colnames(set.train[-which(colnames(set.train) == 'Class')])
@@ -82,8 +82,7 @@ for (datasetID in 1:n) {
 				# Call the noise filter here.
 				filterResult <- general.callNoiseFilter(
 					data = smotedTrainSet.noise$data, 
-					whichFilter = noiseFilterID, 
-					dataType = config.DATASET_SEQ$datasetType[datasetID])
+					whichFilter = noiseFilterID)
 
 				for (classifierID in config.CLASSIFIER_SEQ) {
 					# Here all the three different accuracies are gotten. It is not safe to make any assumptions of

@@ -32,7 +32,7 @@ general.fitAndPredict <- function(data.train, data.test, whichClassifier = 'RF')
 	return (prediction)
 }
 
-general.callNoiseFilter <- function(data, whichFilter = 'HARF', dataType = 'RNA-Seq') {
+general.callNoiseFilter <- function(data, whichFilter = 'HARF') {
 	cleanData <- NULL
 	switch (whichFilter,
 		'HARF' = {
