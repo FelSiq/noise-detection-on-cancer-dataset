@@ -1,0 +1,190 @@
+processing: dataset_lymphoma_shipp.txt ...
+
+Recursive feature selection
+
+Outer resampling method: Cross-Validated (10 fold) 
+
+Resampling performance over subset size:
+
+ Variables Accuracy  Kappa AccuracySD KappaSD Selected
+       500   0.9321 0.8088    0.09846  0.2612        *
+       600   0.9054 0.7153    0.13391  0.3894         
+       750   0.9054 0.7153    0.13391  0.3894         
+       800   0.9179 0.7553    0.13657  0.3967         
+       900   0.9179 0.7553    0.13657  0.3967         
+      2000   0.8929 0.6553    0.14261  0.4506         
+
+The top 5 variables (out of 500):
+   X620, X1231, X814, X46, X470
+
+processing: dataset_adrenal_dahia.txt ...
+
+Recursive feature selection
+
+Outer resampling method: Cross-Validated (10 fold) 
+
+Resampling performance over subset size:
+
+ Variables Accuracy  Kappa AccuracySD KappaSD Selected
+       500   0.8421 0.1965     0.1092  0.3929         
+       600   0.8421 0.1965     0.1092  0.3929         
+       750   0.8563 0.2965     0.1202  0.4590        *
+       800   0.8421 0.1965     0.1092  0.3929         
+       900   0.8296 0.1953     0.1121  0.3916         
+      2000   0.8313 0.1765     0.1272  0.4402         
+
+The top 5 variables (out of 750):
+   X639, X591, X301, X1824, X1566
+
+processing: dataset_mixed_chowdary.txt ...
+
+Recursive feature selection
+
+Outer resampling method: Cross-Validated (10 fold) 
+
+Resampling performance over subset size:
+
+ Variables Accuracy  Kappa AccuracySD KappaSD Selected
+       500   0.9618 0.9199    0.06539  0.1353        *
+       600   0.9618 0.9199    0.06539  0.1353         
+       750   0.9618 0.9199    0.06539  0.1353         
+       800   0.9618 0.9199    0.06539  0.1353         
+       900   0.9618 0.9199    0.06539  0.1353         
+      2000   0.9618 0.9199    0.06539  0.1353         
+
+The top 5 variables (out of 500):
+   X615, X1413, X933, X177, X621
+
+processing: dataset_colon_alon.txt ...
+
+Recursive feature selection
+
+Outer resampling method: Cross-Validated (10 fold) 
+
+Resampling performance over subset size:
+
+ Variables Accuracy  Kappa AccuracySD KappaSD Selected
+       500   0.8548 0.7022     0.1605  0.2938        *
+       600   0.8405 0.6717     0.1523  0.2747         
+       750   0.8548 0.7049     0.1457  0.2525         
+       800   0.8071 0.5717     0.1499  0.3201         
+       900   0.8405 0.6717     0.1523  0.2747         
+      2000   0.8238 0.6146     0.1620  0.3476         
+
+The top 5 variables (out of 500):
+   X1671, X249, X493, X765, X245
+
+processing: dataset_prostate_singh.txt ...
+
+Recursive feature selection
+
+Outer resampling method: Cross-Validated (10 fold) 
+
+Resampling performance over subset size:
+
+ Variables Accuracy  Kappa AccuracySD KappaSD Selected
+       500   0.9209 0.8420    0.09172  0.1834        *
+       600   0.9209 0.8420    0.09172  0.1834         
+       750   0.9209 0.8420    0.09172  0.1834         
+       800   0.9209 0.8420    0.09172  0.1834         
+       900   0.9209 0.8420    0.09172  0.1834         
+      2000   0.9118 0.8245    0.09735  0.1938         
+
+The top 5 variables (out of 500):
+   X737, X1777, X341, X51, X1004
+
+processing: CHOL.rnaseqv2.txt ...
+
+Recursive feature selection
+
+Outer resampling method: Cross-Validated (10 fold) 
+
+Resampling performance over subset size:
+
+ Variables Accuracy Kappa AccuracySD KappaSD Selected
+       500        1     1          0       0        *
+       600        1     1          0       0         
+       750        1     1          0       0         
+       800        1     1          0       0         
+       900        1     1          0       0         
+     19665        1     1          0       0         
+
+The top 5 variables (out of 500):
+   ECHS1.1892, GHR.2690, MGST1.4257, LARP1B.55132, COLEC10.10584
+
+processing: LUAD.rnaseqv2.txt ...
+
+Recursive feature selection
+
+Outer resampling method: Cross-Validated (10 fold) 
+
+Resampling performance over subset size:
+
+ Variables Accuracy  Kappa AccuracySD KappaSD Selected
+       500   0.9913 0.9525   0.009183 0.05029         
+       600   0.9930 0.9626   0.008982 0.04853        *
+       750   0.9913 0.9525   0.009151 0.05027         
+       800   0.9896 0.9425   0.008982 0.04978         
+       900   0.9913 0.9525   0.009151 0.05027         
+     20198   0.9913 0.9525   0.009151 0.05027         
+
+The top 5 variables (out of 600):
+   STX11.8676, EMP2.2013, C13orf15.28984, C9orf140.89958, ADRB2.154
+
+processing: READ.rnaseqv2.txt ...
+
+Recursive feature selection
+
+Outer resampling method: Cross-Validated (10 fold) 
+
+Resampling performance over subset size:
+
+ Variables Accuracy Kappa AccuracySD KappaSD Selected
+       500   0.9909   0.9    0.02875  0.3162        *
+       600   0.9909   0.9    0.02875  0.3162         
+       750   0.9909   0.9    0.02875  0.3162         
+       800   0.9909   0.9    0.02875  0.3162         
+       900   0.9909   0.9    0.02875  0.3162         
+     19889   0.9909   0.9    0.02875  0.3162         
+
+The top 5 variables (out of 500):
+   HPSE2.60495, CDH3.1001, MUSK.4593, TMEM41A.90407, GCG.2641
+
+processing: KICH.rnaseqv2.txt ...
+
+Recursive feature selection
+
+Outer resampling method: Cross-Validated (10 fold) 
+
+Resampling performance over subset size:
+
+ Variables Accuracy Kappa AccuracySD KappaSD Selected
+       500        1     1          0       0        *
+       600        1     1          0       0         
+       750        1     1          0       0         
+       800        1     1          0       0         
+       900        1     1          0       0         
+     19928        1     1          0       0         
+
+The top 5 variables (out of 500):
+   SPEF1.25876, NECAB3.63941, GPRIN2.9721, C8orf84.157869, TMEM207.131920
+
+processing: THCA.rnaseqv2.txt ...
+
+Recursive feature selection
+
+Outer resampling method: Cross-Validated (10 fold) 
+
+Resampling performance over subset size:
+
+ Variables Accuracy  Kappa AccuracySD KappaSD Selected
+       500   0.9858 0.9174    0.01632 0.09593         
+       600   0.9876 0.9275    0.01685 0.09906        *
+       750   0.9876 0.9275    0.01685 0.09906         
+       800   0.9858 0.9174    0.01632 0.09593         
+       900   0.9876 0.9275    0.01685 0.09906         
+     20163   0.9858 0.9174    0.01632 0.09593         
+
+The top 5 variables (out of 600):
+   GABRB2.2561, MMRN1.22915, CDKN2B.1030, DPT.1805, RELN.5649
+
