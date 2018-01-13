@@ -1,3 +1,4 @@
 datasets/
 noiseResults.out
 results/*.out
+*.backup
