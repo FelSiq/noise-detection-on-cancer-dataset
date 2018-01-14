@@ -19,7 +19,8 @@ library(e1071) # For SVM
 library(class) # For knn
 library(NoiseFiltersR) # For noise filters
 library(unbalanced) # For SMOTE (treatment of unbalanced dataset)
-library(caret) # For a good confusion matrix and class balancing
+library(caret) # For a good confusion matrix
+library(Boruta) # For feature selection
 library(parallel)
 
 # Specify if parallel environment should be used on the script run
@@ -36,11 +37,6 @@ config.DATASET_SEQ <- list()
 
 # Initial experiment setup
 config.DATASET_SEQ$datasetName <- c(
-	'CHOL.mirnaseq.txt', 
-	'KICH.mirnaseq.txt', 
-	'LUAD.mirnaseq.txt', 
-	'THCA.mirnaseq.txt', 
-	'BRCA.mirnaseq.txt', 
 	'dataset_lymphoma_shipp.txt', 
 	'dataset_adrenal_dahia.txt', 
 	'dataset_mixed_chowdary.txt', 
@@ -52,11 +48,6 @@ config.DATASET_SEQ$datasetName <- c(
 	'KICH.rnaseqv2.txt', 
 	'THCA.rnaseqv2.txt')
 config.DATASET_SEQ$datasetType <- c(
-	'Micro-RNA',
-	'Micro-RNA',
-	'Micro-RNA',
-	'Micro-RNA',
-	'Micro-RNA',
 	'Microarray',
 	'Microarray',
 	'Microarray',
@@ -70,7 +61,7 @@ config.DATASET_SEQ$datasetType <- c(
 # This is the sequence which the choosen classifiers will be called, for each dataset
 config.CLASSIFIER_SEQ <- c('RF', 'SVM', 'KNN')
 # Sequence of Noise filters, for each classifier
-config.NOISEFILTER_SEQ <- c('HARF', 'AENN', 'INFFC')
+config.NOISEFILTER_SEQ <- c('INFFC', 'HARF', 'AENN')
 
 DEBUG = TRUE 
 if (!DEBUG) {
@@ -121,7 +112,9 @@ config.DATASPLIT_RATE <- 0.6
 config.ERROR_INPUT_RATE <- 0.2
 # Number of folds in the cross validation of the experiments
 config.FOLDS_NUM_CROSS_VALIDATION <- 5
-# Number of variables to be keep on the feature selection
-config.FT_SELECTION_KEPT_VARIABLE_NUM <- c(800, 850, 900, 950)
+# Number of variables to be keep on the feature selection (caret approach only)
+config.FT_SELECTION_KEPT_VARIABLE_NUM <- c(500, 600, 750, 800, 900)
 # k of kNN
 config.KNN_K <- 5
+
+config.BORUTA_MAX_RUNS <- 1000

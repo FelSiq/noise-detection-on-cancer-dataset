@@ -43,19 +43,30 @@ for (datasetID in 1:n) {
 
 		# Feature selection on datasets that are not of type 'Micro-RNA'
 		if (config.DATASET_SEQ$datasetType[datasetID] != 'Micro-RNA') {
-			control <- rfeControl(functions = rfFuncs, method = 'cv', number = 10)
-			results <- rfe(
-				x = set.train[-which(colnames(set.train) == 'Class')],
-				y = set.train$Class,
-				rfeControl = control,
-				sizes = config.FT_SELECTION_KEPT_VARIABLE_NUM)
-			selectedAtt <- predictors(results)
-		} else {
-			selectedAtt <- colnames(set.train[-which(colnames(set.train) == 'Class')])
-		}
+			# CARET APPROACH
+			# control <- rfeControl(functions = rfFuncs, method = 'cv', number = 10)
+			# results <- rfe.nonCaret(
+			# 	x = set.train[-which(colnames(set.train) == 'Class')],
+			# 	y = set.train$Class,
+			# 	rfeControl = control,
+			# 	sizes = config.FT_SELECTION_KEPT_VARIABLE_NUM)
+			# selectedAtt <- predictors(results)
+			# ------
 
-		set.train <- set.train[c(selectedAtt, 'Class')]
-		set.test <- set.test[c(selectedAtt, 'Class')]
+			# BORUTA APPROACH 
+			partial.result <- Boruta(
+				x = set.train[-which(colnames(set.train) == 'Class')], 
+				y = set.train$Class,
+				maxRuns = config.BORUTA_MAX_RUNS)
+			final.result <- TentativeRoughFix(partial.result)
+			selectedAtt <- getSelectedAttributes(final.result)
+			# ------
+
+			set.train <- set.train[c(selectedAtt, 'Class')]
+			set.test <- set.test[c(selectedAtt, 'Class')]
+		} 
+
+		cat('!!!DEBUG - FT num:', ncol(set.train), '\n', sep = ' ')
 
 		for (smoteEnabled in config.SMOTE_SEQ) {
 			# SMOTE is a technique to balance the classes on the dataset. On this binary scenario, it does
