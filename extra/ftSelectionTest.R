@@ -1,6 +1,3 @@
-library(caret)
-library(randomForest)
-
 general.getDataset <- function(filepath, dataType = 'Microarray') {
 	dataset <- read.csv(filepath, sep = ' ')
 	
@@ -43,25 +40,50 @@ config.DATASET_SEQ$datasetType <- c(
 	'RNA-Seq',
 	'RNA-Seq')
 
-config.FT_SELECTION_KEPT_VARIABLE_NUM <- c(500, 600, 750, 800, 900)
-
-control <- rfeControl(functions = rfFuncs, method = 'cv', number = 10)
-
-sink(file = 'ftSelectionTest.out', append=TRUE)
-
 n <- min(length(config.DATASET_SEQ$datasetName), length(config.DATASET_SEQ$datasetType))
+
+# RFS from Caret --------------------------------------------------
+# sink(file = 'ftSelectionTest_caret.out', append=TRUE)
+# library(caret)
+# library(randomForest)
+# config.FT_SELECTION_KEPT_VARIABLE_NUM <- c(500, 600, 750, 800, 900)
+
+# control <- rfeControl(functions = rfFuncs, method = 'cv', number = 10)
+
+# for (datasetID in 1:n) {
+# 	cat('(RFS) processing:', config.DATASET_SEQ$datasetName[datasetID], '...\n', sep = ' ')
+# 	dataset <- general.getDataset(
+# 		filepath = paste('./datasets', config.DATASET_SEQ$datasetName[datasetID], sep = '/'), 
+# 		dataType = config.DATASET_SEQ$datasetType[datasetID])
+
+# 	output <- rfe(x = dataset[-which(colnames(dataset) == 'Class')],
+# 		y = dataset$Class,
+# 		rfeControl = control,
+# 		sizes = config.FT_SELECTION_KEPT_VARIABLE_NUM)
+	
+# 	print(output)
+# }
+
+# BORUTA ---------------------------------------------------------
+library(Boruta)
+library(randomForest)
+sink(file = 'ftSelectionTest_Boruta.out', append=TRUE)
+
 for (datasetID in 1:n) {
-	cat('processing:', config.DATASET_SEQ$datasetName[datasetID], '...\n', sep = ' ')
-	dataset <- general.getDataset(
+	cat('(Boruta) processing:', config.DATASET_SEQ$datasetName[datasetID], '...\n', sep = ' ')
+
+	set.train <- general.getDataset(
 		filepath = paste('./datasets', config.DATASET_SEQ$datasetName[datasetID], sep = '/'), 
 		dataType = config.DATASET_SEQ$datasetType[datasetID])
 
-	output <- rfe(x = dataset[-which(colnames(dataset) == 'Class')],
-		y = dataset$Class,
-		rfeControl = control,
-		sizes = config.FT_SELECTION_KEPT_VARIABLE_NUM)
-	
-	print(output)
+	partial.result <- Boruta(
+		x = set.train[-which(colnames(set.train) == 'Class')], 
+		y = set.train$Class)
+
+	final.result <- TentativeRoughFix(partial.result)
+
+	print(final.result)
 }
 
+# ----------------------------------------------------------------
 sink(NULL)
