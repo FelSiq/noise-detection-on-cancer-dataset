@@ -1,3 +1,17 @@
+produceMetadata <- FALSE
+printLatexCode <- TRUE
+
+signifPlaces <- function(x) {
+	i <- 0
+	if (!is.na(x) & x != 0.0) {
+		while (x < 1.0) {
+			x <- x * 10.0
+			i <- i + 1
+		}
+	}
+	return (i)
+}
+
 source('./src/generalFunctions.R')
 
 config.DATASET_SEQ <- list()
@@ -25,6 +39,7 @@ config.DATASET_SEQ$datasetType <- c(
 	'RNA-Seq',
 	'RNA-Seq')
 
+set.seed(101010)
 n <- min(length(config.DATASET_SEQ$datasetName), length(config.DATASET_SEQ$datasetType))
 
 # RFS from Caret --------------------------------------------------
@@ -74,67 +89,116 @@ n <- min(length(config.DATASET_SEQ$datasetName), length(config.DATASET_SEQ$datas
 # BORUTA X CARET (TO BE TESTED)
 # ----------------------------------------------------------------
 # https://www.analyticsvidhya.com/blog/2016/03/select-important-variables-boruta-package/
-library(Boruta)
-library(caret)
+if (produceMetadata) {
+	library(Boruta)
+	library(caret)
 
-library(randomForest)
-library(e1071)
-library(class)
+	library(randomForest)
+	library(e1071)
+	library(class)
 
-sink(file = 'ftSelectionTest_Boruta_x_caret.out', append=TRUE)
-config.FT_SELECTION_KEPT_VARIABLE_NUM <- c(500, 600, 750, 800, 900)
-config.CLASSIFIER_SEQ <- c('RF', 'SVM', 'KNN')
+	sink(file = 'ftSelectionTest_Boruta_x_caret.out', append=TRUE)
+	config.FT_SELECTION_KEPT_VARIABLE_NUM <- c(500, 600, 750, 800, 900)
+	config.BORUTA_MAX_RUNS <- 1000
+	config.KNN_K <- 5
+	config.CLASSIFIER_SEQ <- c('RF', 'SVM', 'KNN')
+	control <- rfeControl(functions = rfFuncs, method = 'cv', number = 10)
 
-for (datasetID in 1:n) {
-	cat('(Boruta x caret) processing:', config.DATASET_SEQ$datasetName[datasetID], '...\n', sep = ' ')
+	for (datasetID in 1:n) {
+		cat('(Boruta x caret) processing:', config.DATASET_SEQ$datasetName[datasetID], '...\n', sep = ' ')
 
-	dataset <- general.getDataset(
-		filepath = paste('./datasets', config.DATASET_SEQ$datasetName[datasetID], sep = '/'), 
-		dataType = config.DATASET_SEQ$datasetType[datasetID])
+		dataset <- general.getDataset(
+			filepath = paste('./datasets', config.DATASET_SEQ$datasetName[datasetID], sep = '/'), 
+			dataType = config.DATASET_SEQ$datasetType[datasetID])
 
-	foldsIndex <- sample(c(1:10), nrow(dataset), replace=TRUE)
+		foldsIndex <- sample(c(1:10), nrow(dataset), replace=TRUE)
 
-	for (k in 1:10) {
-		set.train <- subset(dataset, foldsIndex != k)
-		set.test <- subset(dataset, foldsIndex == k)
+		for (k in 1:10) {
+			set.train <- subset(dataset, foldsIndex != k)
+			set.test <- subset(dataset, foldsIndex == k)
+			
+			# BORUTA APPROACH
+			partial.result <- Boruta(
+				x = set.train[-which(colnames(set.train) == 'Class')], 
+				y = set.train$Class,
+				maxRuns = config.BORUTA_MAX_RUNS)
+			final.result <- TentativeRoughFix(partial.result)
+			selectedAttBoruta <- c(getSelectedAttributes(final.result), 'Class')
 
-		# BORUTA APPROACH
-		partial.result <- Boruta(
-			x = set.train[-which(colnames(set.train) == 'Class')], 
-			y = set.train$Class,
-			maxRuns = config.BORUTA_MAX_RUNS)
-		final.result <- TentativeRoughFix(partial.result)
-		selectedAttBoruta <- getSelectedAttributes(final.result)
+			# CARET APPROACH
+			results <- rfe(
+				x = set.train[-which(colnames(set.train) == 'Class')],
+				y = set.train$Class,
+				rfeControl = control,
+				sizes = config.FT_SELECTION_KEPT_VARIABLE_NUM)
+			selectedAttCaret <- c(predictors(results), 'Class')
 
-		# CARET APPROACH
-		control <- rfeControl(functions = rfFuncs, method = 'cv', number = 10)
-		results <- rfe.nonCaret(
-			x = set.train[-which(colnames(set.train) == 'Class')],
-			y = set.train$Class,
-			rfeControl = control,
-			sizes = config.FT_SELECTION_KEPT_VARIABLE_NUM)
-		selectedAttCaret <- predictors(results)
+			# Fit predictors
+			for (classifierID in config.CLASSIFIER_SEQ) {
+				predictionsBoruta <- general.fitAndPredict(
+					data.train = set.train[selectedAttBoruta], 
+					data.test = set.test[selectedAttBoruta], 
+					whichClassifier = classifierID)
+				accBoruta <- caret::confusionMatrix(predictionsBoruta, set.test$Class)$overall[1]
+				pValueBoruta <- caret::confusionMatrix(predictionsBoruta, set.test$Class)$overall[6]
 
-		# Fit predictors
-		for (classifierID in config.CLASSIFIER_SEQ) {
-			predictionsBoruta <- general.fitAndPredict(
-				data.train = set.train[selectedAttBoruta], 
-				data.test = set.test[selectedAttBoruta], 
-				whichClassifier = classifierID)
-			accBoruta <- caret::confusionMatrix(predictionsBoruta, set.test[selectedAttBoruta]$Class)$overall[1]
-			pValueBoruta <- caret::confusionMatrix(predictionsBoruta, set.test[selectedAttBoruta]$Class)$overall[6]
+				predictionsCaret <- general.fitAndPredict(
+					data.train = set.train[selectedAttCaret], 
+					data.test = set.test[selectedAttCaret], 
+					whichClassifier = classifierID)
+				accCaret <- caret::confusionMatrix(predictionsCaret, set.test$Class)$overall[1]
+				pValueCaret <- caret::confusionMatrix(predictionsCaret, set.test$Class)$overall[6]
 
-			predictionsCaret <- general.fitAndPredict(
-				data.train = set.train[selectedAttCaret], 
-				data.test = set.test[selectedAttCaret], 
-				whichClassifier = classifierID)
-			accCaret <- caret::confusionMatrix(predictionsBoruta, set.test[selectedAttCaret]$Class)$overall[1]
-			pValueCaret <- caret::confusionMatrix(predictionsBoruta, set.test[selectedAttCaret]$Class)$overall[6]
-
-			cat(date(), i, config.DATASET_SEQ$datasetName[datasetID], classifierID, 
-				accBoruta, accCaret, pValueBoruta, pValueCaret, '\n', sep='|')
+				cat(date(), k, config.DATASET_SEQ$datasetName[datasetID], classifierID, 
+					accBoruta, accCaret, pValueBoruta, pValueCaret, '\n', sep='|')
+			}
 		}
 	}
 }
+
+# ---------------------------------------
+# BORUTA X CARET LATEX CODE (TO BE TESTED)
+# ---------------------------------------
+if (printLatexCode) {
+	sink(file = 'processedBoruta_x_caret.out', append = TRUE)
+	config.CLASSIFIER_SEQ <- c('KNN', 'RF', 'SVM')
+
+	metadata <- read.csv('ftSelectionTest_Boruta_x_caret.out', sep='|')
+	colnames(metadata) <- c('Date', 'Fold', 'Dataset', 'Classifier', 
+		'AccBoruta', 'AccCaret', 'PValueBoruta', 'PValueCaret')
+
+	dataSeq <- c(
+		'CHOL.rnaseqv2.txt', 
+		'KICH.rnaseqv2.txt', 
+		'LUAD.rnaseqv2.txt', 
+		'READ.rnaseqv2.txt', 
+		'THCA.rnaseqv2.txt',
+		'dataset_adrenal_dahia.txt', 
+		'dataset_colon_alon.txt', 
+		'dataset_lymphoma_shipp.txt', 
+		'dataset_mixed_chowdary.txt', 
+		'dataset_prostate_singh.txt') 
+
+	charAsciiIndex <- 65
+	for (r in dataSeq) {
+		cat('\\colcell\\dados', intToUtf8(charAsciiIndex), 'Nome & ',sep='')
+		charAsciiIndex <- if(charAsciiIndex != 69) (charAsciiIndex + 1) else (charAsciiIndex + 5)
+		for (c in config.CLASSIFIER_SEQ) {
+			curMetadata <- metadata[metadata$Dataset == r & metadata$Classifier == c,]
+
+			if (nrow(curMetadata) > 0) {
+				stdDevPredCorrupted <- signif(sd(curMetadata$predCorrupted), 1)
+				predCorruptedPlaces <- signifPlaces(stdDevPredCorrupted)
+				cat('$', round(mean(curMetadata$predCorrupted), predCorruptedPlaces), 
+					'\\pm', stdDevPredCorrupted, '$', sep='')
+								
+				if (c != 'SVM')
+					cat(' & ')	
+			}
+		}
+		cat(' \\\\\n')
+	}
+}
+
 # ----------------------------------------------------------------
 sink(NULL)
