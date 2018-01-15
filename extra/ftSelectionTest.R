@@ -1,20 +1,5 @@
-general.getDataset <- function(filepath, dataType = 'Microarray') {
-	dataset <- read.csv(filepath, sep = ' ')
-	
-	if (dataType == 'Microarray') {
-		dataset <- as.data.frame(t(dataset))
-		colnames(dataset) <- c('Class', paste('X', seq(1, ncol(dataset) - 1), sep = ''))
-		dataset <- dataset[, c(2:(ncol(dataset)), 1)]
-	} else {
-		colnames(dataset)[ncol(dataset)] <- 'Class'
-	}
-	
-	labels <- unique(dataset$Class)
-	majorityLabel <- ifelse(sum(dataset$Class == labels[1]) >= length(dataset$Class)/2, 1, 2)
-	dataset$Class <- factor(ifelse(dataset$Class == labels[majorityLabel], 0, 1))
+source('./src/generalFunctions.R')
 
-	return (dataset)
-}
 config.DATASET_SEQ <- list()
 
 config.DATASET_SEQ$datasetName <- c(
@@ -65,25 +50,91 @@ n <- min(length(config.DATASET_SEQ$datasetName), length(config.DATASET_SEQ$datas
 # }
 
 # BORUTA ---------------------------------------------------------
+# library(Boruta)
+# library(randomForest)
+# sink(file = 'ftSelectionTest_Boruta.out', append=TRUE)
+
+# for (datasetID in 1:n) {
+# 	cat('(Boruta) processing:', config.DATASET_SEQ$datasetName[datasetID], '...\n', sep = ' ')
+
+# 	set.train <- general.getDataset(
+# 		filepath = paste('./datasets', config.DATASET_SEQ$datasetName[datasetID], sep = '/'), 
+# 		dataType = config.DATASET_SEQ$datasetType[datasetID])
+
+# 	partial.result <- Boruta(
+# 		x = set.train[-which(colnames(set.train) == 'Class')], 
+# 		y = set.train$Class)
+
+# 	final.result <- TentativeRoughFix(partial.result)
+
+# 	print(final.result)
+# }
+
+# ----------------------------------------------------------------
+# BORUTA X CARET (TO BE TESTED)
+# ----------------------------------------------------------------
+# https://www.analyticsvidhya.com/blog/2016/03/select-important-variables-boruta-package/
 library(Boruta)
+library(caret)
+
 library(randomForest)
-sink(file = 'ftSelectionTest_Boruta.out', append=TRUE)
+library(e1071)
+library(class)
+
+sink(file = 'ftSelectionTest_Boruta_x_caret.out', append=TRUE)
+config.FT_SELECTION_KEPT_VARIABLE_NUM <- c(500, 600, 750, 800, 900)
+config.CLASSIFIER_SEQ <- c('RF', 'SVM', 'KNN')
 
 for (datasetID in 1:n) {
-	cat('(Boruta) processing:', config.DATASET_SEQ$datasetName[datasetID], '...\n', sep = ' ')
+	cat('(Boruta x caret) processing:', config.DATASET_SEQ$datasetName[datasetID], '...\n', sep = ' ')
 
-	set.train <- general.getDataset(
+	dataset <- general.getDataset(
 		filepath = paste('./datasets', config.DATASET_SEQ$datasetName[datasetID], sep = '/'), 
 		dataType = config.DATASET_SEQ$datasetType[datasetID])
 
-	partial.result <- Boruta(
-		x = set.train[-which(colnames(set.train) == 'Class')], 
-		y = set.train$Class)
+	foldsIndex <- sample(c(1:10), nrow(dataset), replace=TRUE)
 
-	final.result <- TentativeRoughFix(partial.result)
+	for (k in 1:10) {
+		set.train <- subset(dataset, foldsIndex != k)
+		set.test <- subset(dataset, foldsIndex == k)
 
-	print(final.result)
+		# BORUTA APPROACH
+		partial.result <- Boruta(
+			x = set.train[-which(colnames(set.train) == 'Class')], 
+			y = set.train$Class,
+			maxRuns = config.BORUTA_MAX_RUNS)
+		final.result <- TentativeRoughFix(partial.result)
+		selectedAttBoruta <- getSelectedAttributes(final.result)
+
+		# CARET APPROACH
+		control <- rfeControl(functions = rfFuncs, method = 'cv', number = 10)
+		results <- rfe.nonCaret(
+			x = set.train[-which(colnames(set.train) == 'Class')],
+			y = set.train$Class,
+			rfeControl = control,
+			sizes = config.FT_SELECTION_KEPT_VARIABLE_NUM)
+		selectedAttCaret <- predictors(results)
+
+		# Fit predictors
+		for (classifierID in config.CLASSIFIER_SEQ) {
+			predictionsBoruta <- general.fitAndPredict(
+				data.train = set.train[selectedAttBoruta], 
+				data.test = set.test[selectedAttBoruta], 
+				whichClassifier = classifierID)
+			accBoruta <- caret::confusionMatrix(predictionsBoruta, set.test[selectedAttBoruta]$Class)$overall[1]
+			pValueBoruta <- caret::confusionMatrix(predictionsBoruta, set.test[selectedAttBoruta]$Class)$overall[6]
+
+			predictionsCaret <- general.fitAndPredict(
+				data.train = set.train[selectedAttCaret], 
+				data.test = set.test[selectedAttCaret], 
+				whichClassifier = classifierID)
+			accCaret <- caret::confusionMatrix(predictionsBoruta, set.test[selectedAttCaret]$Class)$overall[1]
+			pValueCaret <- caret::confusionMatrix(predictionsBoruta, set.test[selectedAttCaret]$Class)$overall[6]
+
+			cat(date(), i, config.DATASET_SEQ$datasetName[datasetID], classifierID, 
+				accBoruta, accCaret, pValueBoruta, pValueCaret, '\n', sep='|')
+		}
+	}
 }
-
 # ----------------------------------------------------------------
 sink(NULL)

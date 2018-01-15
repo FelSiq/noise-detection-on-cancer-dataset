@@ -116,5 +116,5 @@ config.FOLDS_NUM_CROSS_VALIDATION <- 5
 config.FT_SELECTION_KEPT_VARIABLE_NUM <- c(500, 600, 750, 800, 900)
 # k of kNN
 config.KNN_K <- 5
-
+# Borute approach only
 config.BORUTA_MAX_RUNS <- 1000
