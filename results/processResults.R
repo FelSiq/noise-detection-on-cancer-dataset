@@ -42,6 +42,10 @@ signifPlaces <- function(x) {
 	return (i)
 }
 
+removeZero <- function(x) {
+	return(sub('0\\.', '.', as.character(x)))
+}
+
 # ---------------------------------------
 # PROCESS NON-FILTER BASED ACCURACY
 # ---------------------------------------
@@ -64,14 +68,14 @@ if (printOriginalAcc){
 						if (p == 'Original') {
 							stdDevPredOriginal <- signif(sd(curMetadata$predOriginal), 1)
 							predOriginalPlaces <- signifPlaces(stdDevPredOriginal)
-							cat('$', round(mean(curMetadata$predOriginal), predOriginalPlaces), 
-								'\\pm', stdDevPredOriginal, '$ & ', sep='')
+							cat('$', removeZero(round(mean(curMetadata$predOriginal), predOriginalPlaces)), 
+								'\\pm', removeZero(stdDevPredOriginal), '$ & ', sep='')
 						}
 						if (p == 'Corrupted') {
 							stdDevPredCorrupted <- signif(sd(curMetadata$predCorrupted), 1)
 							predCorruptedPlaces <- signifPlaces(stdDevPredCorrupted)
-							cat('$', round(mean(curMetadata$predCorrupted), predCorruptedPlaces), 
-								'\\pm', stdDevPredCorrupted, '$', sep='')
+							cat('$', removeZero(round(mean(curMetadata$predCorrupted), predCorruptedPlaces)), 
+								'\\pm', removeZero(stdDevPredCorrupted), '$', sep='')
 								
 							if (c != 'SVM')
 								cat(' & ')
@@ -108,8 +112,8 @@ if (printFilterAcc) {
 								stdDevPredFiltered <- signif(sd(curMetadata$predFiltered), 1)
 								predFilteredPlaces <- signifPlaces(stdDevPredFiltered)
 
-								cat('$', round(mean(curMetadata$predFiltered), predFilteredPlaces), 
-									'\\pm', stdDevPredFiltered, '$ & ', sep='')
+								cat('$', removeZero(round(mean(curMetadata$predFiltered), predFilteredPlaces)), 
+									'\\pm', removeZero(stdDevPredFiltered), '$ & ', sep='')
 							}
 							if (p == 'Diff') {
 								diffPred <- mean(curMetadata$predFiltered) - mean(curMetadata$predCorrupted)
@@ -120,7 +124,7 @@ if (printFilterAcc) {
 								color <- if (diffDisplay - diffStd > 0) 'Blue' else if (diffDisplay + diffStd < 0) 'Red' else 'Gray'
 								cat('\\cellcolor{', color ,'} ', sep='')
 
-								cat('$', diffDisplay, '\\pm', diffStd, '$', sep='')
+								cat('$', removeZero(diffDisplay), '\\pm', removeZero(diffStd), '$', sep='')
 
 								if (c != 'SVM')
 									cat(' & ')
