@@ -1,4 +1,5 @@
 produceMetadata <- FALSE
+generateBoxplot <- FALSE
 printLatexCode <- TRUE
 
 signifPlaces <- function(x) {
@@ -10,6 +11,10 @@ signifPlaces <- function(x) {
 		}
 	}
 	return (i)
+}
+
+removeZero <- function(x) {
+	return(sub('0\\.', '.', as.character(x)))
 }
 
 source('./src/generalFunctions.R')
@@ -156,16 +161,31 @@ if (produceMetadata) {
 	}
 }
 
+if (generateBoxplot | printLatexCode) {
+	metadata <- read.csv('ftSelectionTest_Boruta_x_caret.out', sep='|')
+	colnames(metadata) <- c('Date', 'Fold', 'Dataset', 'Classifier', 
+		'AccBoruta', 'AccCaret', 'PValueBoruta', 'PValueCaret')
+}
+# ---------------------------------------
+# BORUTA X CARET BOXPLOT
+# ---------------------------------------
+if (generateBoxplot) {
+	boxplot(metadata$AccBoruta[1:150], metadata$AccCaret[1:150], 
+		metadata$AccBoruta[150:300], metadata$AccCaret[150:300],
+		names=c('Boruta (M)', 'RFE (M)', 'Boruta (R)', 'RFE (R)'),
+		ylab='Acurácia',
+		col=c('steelblue3', 'brown2'),
+		pars=list(boxwex = 0.5, staplewex = 0.5, outwex = 0.75), log='y')
+
+	dev.copy(png,'ftSelectionTest_boxplot.png')
+	dev.off()
+}
+
 # ---------------------------------------
 # BORUTA X CARET LATEX CODE (TO BE TESTED)
 # ---------------------------------------
 if (printLatexCode) {
-	sink(file = 'processedBoruta_x_caret.out', append = TRUE)
 	config.CLASSIFIER_SEQ <- c('KNN', 'RF', 'SVM')
-
-	metadata <- read.csv('ftSelectionTest_Boruta_x_caret.out', sep='|')
-	colnames(metadata) <- c('Date', 'Fold', 'Dataset', 'Classifier', 
-		'AccBoruta', 'AccCaret', 'PValueBoruta', 'PValueCaret')
 
 	dataSeq <- c(
 		'CHOL.rnaseqv2.txt', 
@@ -182,16 +202,17 @@ if (printLatexCode) {
 	charAsciiIndex <- 65
 	for (r in dataSeq) {
 		cat('\\colcell\\dados', intToUtf8(charAsciiIndex), 'Nome & ',sep='')
-		charAsciiIndex <- if(charAsciiIndex != 69) (charAsciiIndex + 1) else (charAsciiIndex + 5)
+		charAsciiIndex <- if(charAsciiIndex != 69) (charAsciiIndex + 1) else (charAsciiIndex + 6)
 		for (c in config.CLASSIFIER_SEQ) {
 			curMetadata <- metadata[metadata$Dataset == r & metadata$Classifier == c,]
 
 			if (nrow(curMetadata) > 0) {
-				stdDevPredCorrupted <- signif(sd(curMetadata$predCorrupted), 1)
-				predCorruptedPlaces <- signifPlaces(stdDevPredCorrupted)
-				cat('$', round(mean(curMetadata$predCorrupted), predCorruptedPlaces), 
-					'\\pm', stdDevPredCorrupted, '$', sep='')
-								
+				accDiff <- curMetadata$AccBoruta - curMetadata$AccCaret 
+
+				stdDevPredDiff <- signif(sd(accDiff), 1)
+				predDiffPlaces <- signifPlaces(stdDevPredDiff)
+				cat('$', removeZero(round(mean(accDiff), predDiffPlaces)), '\\pm', removeZero(stdDevPredDiff), '$', sep='')
+
 				if (c != 'SVM')
 					cat(' & ')	
 			}
