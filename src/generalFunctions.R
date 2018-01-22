@@ -72,3 +72,30 @@ general.getDataset <- function(filepath, dataType = 'Microarray') {
 
 	return (dataset)
 }
+
+general.getCrossValidationFolds <- function(dataset, nfolds = 10, classColumn = ncol(dataset)) {
+	# Tjis cross validation function makes sure that all folds will contain
+	# at least one instance of each class of the given dataset.
+	classTypes <- unique(dataset[[classColumn]])
+	repeat {
+		kpartition <- sample(1:nfolds, size = nrow(dataset), replace = TRUE)
+
+		checkClasses <- 0
+		for (t in 1:nfolds) {
+			classKPart <- dataset[kpartition == t, classColumn]
+			aux <- 0
+			for (s in classTypes) {
+				if (sum(classKPart == s) > 0) {
+					aux <- aux + 1
+				}
+			}
+			if (aux == length(classTypes)) {
+				checkClasses <- checkClasses + 1
+			}
+		}
+		if (checkClasses == nfolds) {
+			break 
+		}
+	}
+	return (kpartition)
+}

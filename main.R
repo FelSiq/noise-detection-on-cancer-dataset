@@ -39,11 +39,9 @@ for (datasetID in 1:n) {
 			size = (config.SAMPLE_SIZE * table(dataset$Class) / nrow(dataset)))
 	}
 	
-	cat('!!!DEBUG - INST num:', nrow(dataset), '\n', sep = ' ')
-
 	# This is the partitions of the k-fold cross validation. Please note that the size of each
 	# partition is not the same, but with approximate size.
-	kpartition <- sample(1:config.FOLDS_NUM_CROSS_VALIDATION, size = nrow(dataset), replace = TRUE)
+	kpartition <- general.getCrossValidationFolds(dataset, nfolds = config.FOLDS_NUM_CROSS_VALIDATION)
 	
 	# It is extremely important to SMOTE and insert artificial noise for each fold of cross validation,
 	# or the results will be biased at the end.
