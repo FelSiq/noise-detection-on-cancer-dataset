@@ -31,6 +31,16 @@ for (datasetID in 1:n) {
 		filepath = paste('./datasets', config.DATASET_SEQ$datasetName[datasetID], sep = '/'), 
 		dataType = config.DATASET_SEQ$datasetType[datasetID])
 	
+	# Should the dataset be sampled (stratified strategy) before procedure?
+	if (config.SAMPLE_DATA) {
+		dataset <- stratified(
+			df = dataset, 
+			group = ncol(dataset), 
+			size = (config.SAMPLE_SIZE * table(dataset$Class) / nrow(dataset)))
+	}
+	
+	cat('!!!DEBUG - INST num:', nrow(dataset), '\n', sep = ' ')
+
 	# This is the partitions of the k-fold cross validation. Please note that the size of each
 	# partition is not the same, but with approximate size.
 	kpartition <- sample(1:config.FOLDS_NUM_CROSS_VALIDATION, size = nrow(dataset), replace = TRUE)

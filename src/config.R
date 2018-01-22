@@ -22,6 +22,7 @@ library(unbalanced) # For SMOTE (treatment of unbalanced dataset)
 library(caret) # For a good confusion matrix
 library(Boruta) # For feature selection
 library(parallel)
+library(fifer) # For stratified sampling of dataset
 
 # Specify if parallel environment should be used on the script run
 config.PARALLEL_SETUP <- FALSE
@@ -31,37 +32,28 @@ config.NO_CORES <- detectCores() - 1
 config.RANDOM_SEED <- 101010
 
 # Set default output file
-sink(file = 'noiseResults.out', append = TRUE)
+sink(file = 'noiseResults1.out', append = TRUE)
 
 config.DATASET_SEQ <- list()
 
 # Initial experiment setup
 config.DATASET_SEQ$datasetName <- c(
-	'dataset_lymphoma_shipp.txt', 
-	'dataset_adrenal_dahia.txt', 
-	'dataset_mixed_chowdary.txt', 
-	'dataset_colon_alon.txt', 
-	'dataset_prostate_singh.txt', 
-	'CHOL.rnaseqv2.txt', 
-	'LUAD.rnaseqv2.txt', 
-	'READ.rnaseqv2.txt', 
-	'KICH.rnaseqv2.txt', 
+	'KICH.mirnaseq.txt',
 	'THCA.rnaseqv2.txt')
+	# 'LUAD.mirnaseq.txt',
+	# 'THCA.mirnaseq.txt',
+	# 'BRCA.mirnaseq.txt')
+
 config.DATASET_SEQ$datasetType <- c(
-	'Microarray',
-	'Microarray',
-	'Microarray',
-	'Microarray',
-	'Microarray',
-	'RNA-Seq',
-	'RNA-Seq',
-	'RNA-Seq',
-	'RNA-Seq',
+	'Micro-RNA',
 	'RNA-Seq')
+	# 'Micro-RNA',
+	# 'Micro-RNA',
+	# 'Micro-RNA')
 # This is the sequence which the choosen classifiers will be called, for each dataset
 config.CLASSIFIER_SEQ <- c('RF', 'SVM', 'KNN')
 # Sequence of Noise filters, for each classifier
-config.NOISEFILTER_SEQ <- c('INFFC', 'HARF', 'AENN')
+config.NOISEFILTER_SEQ <- c('ENG')
 
 DEBUG = TRUE 
 if (!DEBUG) {
@@ -101,7 +93,7 @@ if (!DEBUG) {
 	# This is the sequence which the choosen classifiers will be called, for each dataset
 	config.CLASSIFIER_SEQ <- c('RF', 'SVM', 'KNN')
 	# Sequence of Noise filters, for each classifier
-	config.NOISEFILTER_SEQ <- c('HARF', 'AENN', 'INFFC')
+	config.NOISEFILTER_SEQ <- c('HARF', 'AENN', 'INFFC', 'ENG')
 }
 
 # Turn SMOTE OFF and ON, for each noise filter
@@ -118,3 +110,7 @@ config.FT_SELECTION_KEPT_VARIABLE_NUM <- c(500, 600, 750, 800, 900)
 config.KNN_K <- 5
 # Borute approach only
 config.BORUTA_MAX_RUNS <- 1000
+# Should the dataset be stratified sampled before processing?
+config.SAMPLE_DATA <- TRUE
+# If above is TRUE, how many instances should be kept?
+config.SAMPLE_SIZE <- 80
