@@ -38,7 +38,10 @@ for (datasetID in 1:n) {
 			group = ncol(dataset), 
 			size = (config.SAMPLE_SIZE * table(dataset$Class) / nrow(dataset)))
 	}
-	
+
+	if (config.DEBUG)
+		cat('(DEBUG) Instance number: ', nrow(dataset), '\n', sep = ' ')
+
 	# This is the partitions of the k-fold cross validation. Please note that the size of each
 	# partition is not the same, but with approximate size.
 	kpartition <- general.getCrossValidationFolds(dataset, nfolds = config.FOLDS_NUM_CROSS_VALIDATION)
@@ -74,7 +77,8 @@ for (datasetID in 1:n) {
 			set.test <- set.test[c(selectedAtt, 'Class')]
 		} 
 
-		cat('!!!DEBUG - FT num:', ncol(set.train), '\n', sep = ' ')
+		if (config.DEBUG)
+			cat('(DEBUG) Feature number: ', ncol(set.train), '\n', sep = ' ')
 
 		for (smoteEnabled in config.SMOTE_SEQ) {
 			# SMOTE is a technique to balance the classes on the dataset. On this binary scenario, it does

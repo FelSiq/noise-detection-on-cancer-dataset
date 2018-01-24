@@ -27,75 +27,51 @@ library(fifer) # For stratified sampling of dataset
 # Specify if parallel environment should be used on the script run
 config.PARALLEL_SETUP <- FALSE
 config.NO_CORES <- detectCores() - 1
-
 # A custom seed will be used to ensure experiment replication
 config.RANDOM_SEED <- 101010
-
 # Set default output file
-sink(file = 'noiseResults1.out', append = TRUE)
+sink(file='noiseResults.out', append=TRUE)
+# Display DEBUG information?
+config.DEBUG <- FALSE 
 
 config.DATASET_SEQ <- list()
-
 # Initial experiment setup
 config.DATASET_SEQ$datasetName <- c(
-	'KICH.mirnaseq.txt',
+	'CHOL.mirnaseq.txt', 
+	'KICH.mirnaseq.txt', 
+	'LUAD.mirnaseq.txt', 
+	'THCA.mirnaseq.txt', 
+	'BRCA.mirnaseq.txt', 
+	'dataset_lymphoma_shipp.txt', 
+	'dataset_adrenal_dahia.txt', 
+	'dataset_mixed_chowdary.txt', 
+	'dataset_colon_alon.txt', 
+	'dataset_prostate_singh.txt', 
+	'CHOL.rnaseqv2.txt', 
+	'LUAD.rnaseqv2.txt', 
+	'READ.rnaseqv2.txt', 
+	'KICH.rnaseqv2.txt', 
 	'THCA.rnaseqv2.txt')
-	# 'LUAD.mirnaseq.txt',
-	# 'THCA.mirnaseq.txt',
-	# 'BRCA.mirnaseq.txt')
-
 config.DATASET_SEQ$datasetType <- c(
 	'Micro-RNA',
+	'Micro-RNA',
+	'Micro-RNA',
+	'Micro-RNA',
+	'Micro-RNA',
+	'Microarray',
+	'Microarray',
+	'Microarray',
+	'Microarray',
+	'Microarray',
+	'RNA-Seq',
+	'RNA-Seq',
+	'RNA-Seq',
+	'RNA-Seq',
 	'RNA-Seq')
-	# 'Micro-RNA',
-	# 'Micro-RNA',
-	# 'Micro-RNA')
 # This is the sequence which the choosen classifiers will be called, for each dataset
 config.CLASSIFIER_SEQ <- c('RF', 'SVM', 'KNN')
 # Sequence of Noise filters, for each classifier
-config.NOISEFILTER_SEQ <- c('ENG')
-
-DEBUG = TRUE 
-if (!DEBUG) {
-	# Initial experiment setup
-	config.DATASET_SEQ$datasetName <- c(
-		'CHOL.mirnaseq.txt', 
-		'KICH.mirnaseq.txt', 
-		'LUAD.mirnaseq.txt', 
-		'THCA.mirnaseq.txt', 
-		'BRCA.mirnaseq.txt', 
-		'dataset_lymphoma_shipp.txt', 
-		'dataset_adrenal_dahia.txt', 
-		'dataset_mixed_chowdary.txt', 
-		'dataset_colon_alon.txt', 
-		'dataset_prostate_singh.txt', 
-		'CHOL.rnaseqv2.txt', 
-		'LUAD.rnaseqv2.txt', 
-		'READ.rnaseqv2.txt', 
-		'KICH.rnaseqv2.txt', 
-		'THCA.rnaseqv2.txt')
-	config.DATASET_SEQ$datasetType <- c(
-		'Micro-RNA',
-		'Micro-RNA',
-		'Micro-RNA',
-		'Micro-RNA',
-		'Micro-RNA',
-		'Microarray',
-		'Microarray',
-		'Microarray',
-		'Microarray',
-		'Microarray',
-		'RNA-Seq',
-		'RNA-Seq',
-		'RNA-Seq',
-		'RNA-Seq',
-		'RNA-Seq')
-	# This is the sequence which the choosen classifiers will be called, for each dataset
-	config.CLASSIFIER_SEQ <- c('RF', 'SVM', 'KNN')
-	# Sequence of Noise filters, for each classifier
-	config.NOISEFILTER_SEQ <- c('HARF', 'AENN', 'INFFC', 'ENG')
-}
-
+config.NOISEFILTER_SEQ <- c('HARF', 'AENN', 'INFFC', 'ENG')
 # Turn SMOTE OFF and ON, for each noise filter
 config.SMOTE_SEQ <- c(FALSE, TRUE)
 # Rate of data split between train and test set
