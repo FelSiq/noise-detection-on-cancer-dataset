@@ -147,7 +147,6 @@ if (printPValues) {
 	library(metap)
 	sink(file = 'processedPValues.out', append = TRUE)
 	charAsciiIndex <- 65
-	cat('@', s, f, ':\n')
 	for (r in metadataPathList) {
 		metadata <- getMetadata(r)
 		cat('\\colcell\\dados', intToUtf8(charAsciiIndex), 'Nome & ',sep='')
@@ -155,17 +154,21 @@ if (printPValues) {
 		for (s in config.SMOTE_SEQ) {
 			for (f in config.NOISEFILTER_SEQ) {
 				curMetadata <- metadata[metadata$Filter == f & metadata$SMOTE == s,]
-
 				if (nrow(curMetadata) > 0) {
-					SumLogPValue <- sumlog(curMetadata$PVFiltered)
-					cat(SumLogPValue, sep='')
+					SumLogPValue <- sumlog(curMetadata$PVFiltered)$p
+					numlen <- signifPlaces(SumLogPValue)
+
+					color <- if (SumLogPValue <= 0.05) 'Blue' else 'Red'
+					cat('\\cellcolor{', color ,'} ', sep='')
+
+					cat(if (SumLogPValue > 1e-10) removeZero(round(SumLogPValue, numlen)) else 0.0, sep='')
 
 					if (!(f == 'ENG' && s == TRUE))
 						cat(' & ')				
 				}
-			cat(' \\\\\n')
 			}
 		}
+		cat(' \\\\\n')
 	}
 }
 
