@@ -9,9 +9,10 @@
 # ---------------------------------------
 metadataPathList <- list.files(pattern = '.*\\.dat', recursive = TRUE)
 
-printOriginalAcc <- TRUE
-printFilterAcc <- TRUE
-printPValues <- TRUE
+printOriginalAcc <- FALSE
+printFilterAcc <- FALSE
+printPValues <- FALSE
+plotDensity <- TRUE
 
 # The order of the configuration below follows strictly the pattern on my report and does matter.
 config.SMOTE_SEQ <- c(FALSE, TRUE)
@@ -171,6 +172,66 @@ if (printPValues) {
 		cat(' \\\\\n')
 	}
 }
+
+if (plotDensity) {
+	alldata <- list()
+	alldata$NSMOTE <- NULL
+	alldata$YSMOTE <- NULL
+	for (s in config.SMOTE_SEQ) {
+		accdata <- list()
+		accdata$HARF <- NULL
+		accdata$AENN <- NULL
+		accdata$INFFC <- NULL
+		accdata$ENG <- NULL
+		i <- 1
+		for (r in metadataPathList) {
+			metadata <- getMetadata(r)
+			for (f in config.NOISEFILTER_SEQ) {
+				if (f == 'HARF')
+					accdata$HARF <- c(accdata$HARF, metadata[metadata$Filter == f & metadata$SMOTE == s, 'predFiltered'])
+				if (f == 'AENN')
+					accdata$AENN <- c(accdata$AENN, metadata[metadata$Filter == f & metadata$SMOTE == s, 'predFiltered'])
+				if (f == 'INFFC')
+					accdata$INFFC <- c(accdata$INFFC, metadata[metadata$Filter == f & metadata$SMOTE == s, 'predFiltered'])
+				if (f == 'ENG')
+					accdata$ENG <- c(accdata$ENG, metadata[metadata$Filter == f & metadata$SMOTE == s, 'predFiltered'])
+			}
+		}
+
+		png(paste('densityPlot_SMOTE_', s, '.png', sep=''))
+		i <- 1
+		for (aux in accdata) {
+			if (i == 1) {
+				plot(density(aux), type='l', col = i, main=paste('Densidade de acurácia', (if(s) 'com SMOTE' else '')), 
+					ylim=c(0.0, 7.0), ylab='Densidade', xlab='N = 225')
+			} else {
+				lines(density(aux), type='l', col = i)
+			}
+			text(x = 0.5, y = 6.5 - 0.25 * i, labels = config.NOISEFILTER_SEQ[i],
+				col = 1,pos=4,family='Bookman Old Style')
+			rect(0.465, 6.469 - 0.25 * i, 0.4995, 6.55 - 0.25 * i, col=i,border=NA)
+			i <- i + 1
+		}
+		dev.off()
+
+		if (s == TRUE) {
+			alldata$YSMOTE <- c(accdata$HARF, accdata$AENN, accdata$INFFC, accdata$ENG)
+		} else {
+			alldata$NSMOTE <- c(accdata$HARF, accdata$AENN, accdata$INFFC, accdata$ENG)
+		}
+	}
+	png('SMOTEAnalysis.png')
+	plot(density(alldata$NSMOTE),col='red', main='Impacto do SMOTE', ylab='Densidade', xlab='N = 900')
+	lines(density(alldata$YSMOTE), col='blue')
+	text(x = 0.35, y = 5.25, labels = 'sem SMOTE',
+				col = 'black',pos=4,family='Bookman Old Style')
+	text(x = 0.35, y = 5.5, labels = 'com SMOTE',
+				col = 'black',pos=4,family='Bookman Old Style')
+	rect(0.305, 5.4635, 0.358, 5.545, col='blue', border=NA)
+	rect(0.305, 5.23, 0.358, 5.31, col='red', border=NA)
+	dev.off()
+}
+
 
 sink(NULL)
 # ---------------------------------------
