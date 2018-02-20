@@ -11,7 +11,7 @@ source('res-config.R')
 # ---------------------------------------
 library(metap)
 
-sink(file = './extra-results/processed-p-values.out', append = TRUE)
+sink(file = './extra-results/processed-p-values.out')
 charAsciiIndex <- 65
 for (r in metadataPathList) {
 	metadata <- getMetadata(r)
@@ -23,11 +23,6 @@ for (r in metadataPathList) {
 			if (nrow(curMetadata) > 0) {
 				SumLogPValue <- sumlog(curMetadata$PVFiltered)$p
 				numlen <- signifPlaces(SumLogPValue)
-				if (SumLogPValue > 0.05) {
-					cat(r, s, f, '\n\t', curMetadata$PVFiltered, '\nResult:')
-					print(sumlog(curMetadata$PVFiltered))
-					cat('\n')
-				}
 
 				color <- if (SumLogPValue <= 0.05) 'Blue' else 'Red'
 				cat('\\cellcolor{', color ,'} ', sep='')

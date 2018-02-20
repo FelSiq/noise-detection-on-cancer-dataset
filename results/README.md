@@ -10,3 +10,5 @@ Example:
 ```
 Wed Jan 10 15:52:30 2018|1|CHOL.mirnaseq.txt|RF|HARF|FALSE|1|1|1|0.1073742|0.1073742|0.1073742|
 ```
+
+You can run each subscript separately, or you may run just ''run-all.R'' in order to execute then all.
