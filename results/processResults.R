@@ -144,14 +144,13 @@ if (printFilterAcc) {
 # ---------------------------------------
 # PROCESS P-VALUES (TO BE TESTED)
 # ---------------------------------------
-# http://blog.minitab.com/blog/adventures-in-statistics-2/how-to-correctly-interpret-p-values
 if (printPValues) {
 	library(metap)
-	# sink(file = 'processedPValues.out', append = TRUE)
+	sink(file = 'processedPValues.out', append = TRUE)
 	charAsciiIndex <- 65
 	for (r in metadataPathList) {
 		metadata <- getMetadata(r)
-		# cat('\\colcell\\dados', intToUtf8(charAsciiIndex), 'Nome & ',sep='')
+		cat('\\colcell\\dados', intToUtf8(charAsciiIndex), 'Nome & ',sep='')
 		charAsciiIndex <- charAsciiIndex + 1
 		for (s in config.SMOTE_SEQ) {
 			for (f in config.NOISEFILTER_SEQ) {
@@ -166,12 +165,12 @@ if (printPValues) {
 					}
 
 					color <- if (SumLogPValue <= 0.05) 'Blue' else 'Red'
-					# cat('\\cellcolor{', color ,'} ', sep='')
+					cat('\\cellcolor{', color ,'} ', sep='')
 
-					# cat(if (SumLogPValue > 1e-10) removeZero(round(SumLogPValue, numlen)) else 0.0, sep='')
+					cat(if (SumLogPValue > 1e-10) removeZero(round(SumLogPValue, numlen)) else 0.0, sep='')
 
-					# if (!(f == 'ENG' && s == TRUE))
-						# cat(' & ')				
+					if (!(f == 'ENG' && s == TRUE))
+						cat(' & ')	
 				}
 			}
 		}
