@@ -1,0 +1,15 @@
+\colcell\dadosANome & \cellcolor{Blue} 4e-04 & \cellcolor{Blue} .002 & \cellcolor{Blue} .02 & \cellcolor{Blue} .001 & \cellcolor{Blue} .004 & \cellcolor{Blue} .003 & \cellcolor{Blue} .02 & \cellcolor{Blue} 2e-04 \\
+\colcell\dadosBNome & \cellcolor{Blue} 0 & \cellcolor{Blue} 0 & \cellcolor{Blue} 0 & \cellcolor{Blue} 0 & \cellcolor{Blue} 0 & \cellcolor{Blue} 0 & \cellcolor{Blue} 3e-10 & \cellcolor{Blue} 0 \\
+\colcell\dadosCNome & \cellcolor{Blue} 0 & \cellcolor{Blue} 0 & \cellcolor{Blue} 0 & \cellcolor{Red} .2 & \cellcolor{Blue} 0 & \cellcolor{Blue} 0 & \cellcolor{Blue} 0 & \cellcolor{Red} .3 \\
+\colcell\dadosDNome & \cellcolor{Blue} .004 & \cellcolor{Blue} .04 & \cellcolor{Red} .8 & \cellcolor{Red} .9 & \cellcolor{Blue} .02 & \cellcolor{Blue} .004 & \cellcolor{Red} .06 & \cellcolor{Red} .9 \\
+\colcell\dadosENome & \cellcolor{Blue} 0 & \cellcolor{Blue} 0 & \cellcolor{Blue} 0 & \cellcolor{Red} .2 & \cellcolor{Blue} 0 & \cellcolor{Blue} 0 & \cellcolor{Blue} 0 & \cellcolor{Red} .5 \\
+\colcell\dadosFNome & \cellcolor{Blue} 0 & \cellcolor{Blue} 0 & \cellcolor{Blue} 0 & \cellcolor{Red} .9 & \cellcolor{Blue} 0 & \cellcolor{Blue} 0 & \cellcolor{Blue} 0 & \cellcolor{Red} .1 \\
+\colcell\dadosGNome & \cellcolor{Blue} .009 & \cellcolor{Blue} .03 & \cellcolor{Blue} .03 & \cellcolor{Red} .3 & \cellcolor{Red} .06 & \cellcolor{Blue} .04 & \cellcolor{Blue} .03 & \cellcolor{Blue} .003 \\
+\colcell\dadosHNome & \cellcolor{Blue} 0 & \cellcolor{Blue} 0 & \cellcolor{Blue} 1e-08 & \cellcolor{Blue} 0 & \cellcolor{Blue} 0 & \cellcolor{Blue} 0 & \cellcolor{Blue} 0 & \cellcolor{Blue} 0 \\
+\colcell\dadosINome & \cellcolor{Blue} 0 & \cellcolor{Blue} 2e-10 & \cellcolor{Blue} 0 & \cellcolor{Red} 1 & \cellcolor{Blue} 0 & \cellcolor{Blue} 1e-08 & \cellcolor{Blue} 3e-10 & \cellcolor{Red} 1 \\
+\colcell\dadosJNome & \cellcolor{Blue} 2e-05 & \cellcolor{Blue} 7e-05 & \cellcolor{Blue} 8e-05 & \cellcolor{Red} 1 & \cellcolor{Blue} 5e-07 & \cellcolor{Blue} 3e-04 & \cellcolor{Blue} 2e-05 & \cellcolor{Red} 1 \\
+\colcell\dadosKNome & \cellcolor{Red} .8 & \cellcolor{Red} .7 & \cellcolor{Red} .6 & \cellcolor{Red} .8 & \cellcolor{Red} .9 & \cellcolor{Red} .8 & \cellcolor{Red} .8 & \cellcolor{Red} .5 \\
+\colcell\dadosLNome & \cellcolor{Blue} 3e-05 & \cellcolor{Blue} .01 & \cellcolor{Blue} .001 & \cellcolor{Blue} .02 & \cellcolor{Blue} .05 & \cellcolor{Blue} 2e-04 & \cellcolor{Blue} .02 & \cellcolor{Blue} 2e-04 \\
+\colcell\dadosMNome & \cellcolor{Blue} .001 & \cellcolor{Blue} 6e-07 & \cellcolor{Blue} .02 & \cellcolor{Blue} 1e-05 & \cellcolor{Blue} .003 & \cellcolor{Blue} 1e-04 & \cellcolor{Blue} 3e-04 & \cellcolor{Blue} 2e-05 \\
+\colcell\dadosNNome & \cellcolor{Blue} 0 & \cellcolor{Blue} 0 & \cellcolor{Blue} 0 & \cellcolor{Blue} 0 & \cellcolor{Blue} 0 & \cellcolor{Blue} 0 & \cellcolor{Blue} 0 & \cellcolor{Blue} 0 \\
+\colcell\dadosONome & \cellcolor{Blue} 1e-07 & \cellcolor{Blue} 0 & \cellcolor{Blue} 3e-04 & \cellcolor{Blue} 0 & \cellcolor{Blue} 0 & \cellcolor{Blue} 0 & \cellcolor{Blue} 0 & \cellcolor{Blue} 0 \\
