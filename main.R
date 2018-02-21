@@ -44,7 +44,7 @@ for (datasetID in 1:n) {
 		cat('Done.\nNow processing dataset \'', filepath, '\'.\n', sep='')
 
 	# Should the dataset be sampled (stratified strategy) before procedure?
-	if (config.SAMPLE_DATA) {
+	if (config.SAMPLE_DATA & nrow(dataset) > config.SAMPLE_SIZE) {
 		dataset <- stratified(
 			df = dataset, 
 			group = ncol(dataset), 
