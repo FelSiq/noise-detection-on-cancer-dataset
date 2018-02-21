@@ -26,11 +26,23 @@ source('./src/generalFunctions.R')
 source('./src/parallelSetup.R')
 
 n <- min(length(config.DATASET_SEQ$datasetName), length(config.DATASET_SEQ$datasetType))
+
+if (config.DEBUG)
+	cat('Start of script (', date(), ').\nNumber of datasets to process: ', n, '\n', sep='')
+
 for (datasetID in 1:n) {
-	dataset <- general.getDataset(
-		filepath = paste('./datasets', config.DATASET_SEQ$datasetName[datasetID], sep = '/'), 
-		dataType = config.DATASET_SEQ$datasetType[datasetID])
+	filepath <- paste('./datasets', config.DATASET_SEQ$datasetName[datasetID], sep = '/')
 	
+	if (config.DEBUG)
+		cat('Getting \'', filepath, '\' dataset...', sep='')
+
+	dataset <- general.getDataset(
+		filepath=filepath, 
+		dataType=config.DATASET_SEQ$datasetType[datasetID])
+	
+	if (config.DEBUG)
+		cat('Done.\nNow processing dataset \'', filepath, '\'.\n', sep='')
+
 	# Should the dataset be sampled (stratified strategy) before procedure?
 	if (config.SAMPLE_DATA) {
 		dataset <- stratified(
@@ -39,21 +51,33 @@ for (datasetID in 1:n) {
 			size = (config.SAMPLE_SIZE * table(dataset$Class) / nrow(dataset)))
 	}
 
-	if (config.DEBUG)
-		cat('(DEBUG) Instance number: ', nrow(dataset), '\n', sep = ' ')
+	if (config.DEBUG) {
+		cat('\tInstance number:', nrow(dataset), '\n')
+		cat('\tGenerating partitions of k-fold Cross Validation... ')
+	}
 
 	# This is the partitions of the k-fold cross validation. Please note that the size of each
 	# partition is not the same, but with approximate size.
 	kpartition <- general.getCrossValidationFolds(dataset, nfolds = config.FOLDS_NUM_CROSS_VALIDATION)
 	
+	if (config.DEBUG)
+		cat('Done.\n')
+
 	# It is extremely important to SMOTE and insert artificial noise for each fold of cross validation,
 	# or the results will be biased at the end.
 	for (i in 1:config.FOLDS_NUM_CROSS_VALIDATION) {
 		set.train <- subset(dataset, i != kpartition)
 		set.test <- subset(dataset, i == kpartition)
 
+		if (config.DEBUG)
+			cat('\tDataset splited as test (', nrow(set.test), 
+				') and train (', nrow(set.train), ') subsets.\n', sep='')
+
+
 		# Feature selection on datasets that are not of type 'Micro-RNA'
 		if (config.DATASET_SEQ$datasetType[datasetID] != 'Micro-RNA') {
+			if (config.DEBUG)
+				cat('\tStarted feature selection... ')
 			# CARET APPROACH
 			# control <- rfeControl(functions = rfFuncs, method = 'cv', number = 10)
 			# results <- rfe.nonCaret(
@@ -75,10 +99,13 @@ for (datasetID in 1:n) {
 
 			set.train <- set.train[c(selectedAtt, 'Class')]
 			set.test <- set.test[c(selectedAtt, 'Class')]
+			
+			if (config.DEBUG)
+				cat('Done.\n')
 		} 
 
 		if (config.DEBUG)
-			cat('(DEBUG) Feature number: ', ncol(set.train), '\n', sep = ' ')
+			cat('\tFeature number: ', ncol(set.train), '\n', sep = ' ')
 
 		for (smoteEnabled in config.SMOTE_SEQ) {
 			# SMOTE is a technique to balance the classes on the dataset. On this binary scenario, it does
@@ -87,13 +114,22 @@ for (datasetID in 1:n) {
 			# work: the class column must be a binary (0's and 1's) factor-type column, and the majority class
 			# is assumed corresponding the '0' factor.
 			if (smoteEnabled) {
+				if (config.DEBUG)
+					cat('\tStarted class rebalancing... ')
+
 				aux <- ubSMOTE(set.train[-which(colnames(set.train) == 'Class')], set.train$Class)
 				smotedTrainSet <- data.frame(aux$X)
 				smotedTrainSet$Class <- aux$Y
 				rm(aux)
 				gc()
+
+				if (config.DEBUG)
+					cat('Done.\n')
 			}
 			
+			if (config.DEBUG)
+				cat('\tStarted artificial noise inputation... ')
+
 			# Here comes the artificial noise input. The 'random' method is used, where all instances have a
 			# fixed probability of getting the class label exchanged. On a deeper analysis, different noise
 			# input ratio may be used (for example, 0.05, 0.1, 0.2 and 0.4), because some models may perform 
@@ -101,13 +137,26 @@ for (datasetID in 1:n) {
 			# only a fixed noise input ration is used, and it is specified @ "./src/config.R".
 			smotedTrainSet.noise <- rand(if (smoteEnabled) smotedTrainSet else set.train, config.ERROR_INPUT_RATE)
 	
+			if (config.DEBUG)
+				cat('Done.\n')
+
 			for (noiseFilterID in config.NOISEFILTER_SEQ) {
 				# Call the noise filter here.
+				if (config.DEBUG)
+					cat('\tCalling', noiseFilterID, 'noise filter... ')
+
 				filterResult <- general.callNoiseFilter(
 					data = smotedTrainSet.noise$data, 
 					whichFilter = noiseFilterID)
 
+				if (config.DEBUG)
+					cat('Done.\n')
+
 				for (classifierID in config.CLASSIFIER_SEQ) {
+
+					if (config.DEBUG)
+						cat('\tCalling', classifierID, 'for classification task... ')
+
 					# Here all the three different accuracies are gotten. It is not safe to make any assumptions of
 					# the results beforehand, but the expected pattern is predictionsNoise <= predictionsFiltered <= predictionsOriginal.
 					# Of course, in some scenarios it will not be true, so the k-fold cross validation comes into the scene,
@@ -136,7 +185,10 @@ for (datasetID in 1:n) {
 						whichClassifier = classifierID)
 					accFiltered <- caret::confusionMatrix(predictionsFiltered, set.test$Class)$overall[1]
 					pValueFiltered <- caret::confusionMatrix(predictionsFiltered, set.test$Class)$overall[6]
-	
+		
+					if (config.DEBUG)
+						cat('Done.\n')
+
 					cat(date(), i, config.DATASET_SEQ$datasetName[datasetID], 
 						classifierID, noiseFilterID, smoteEnabled, 
 						accOriginal, accNoise, accFiltered, 
@@ -149,6 +201,9 @@ for (datasetID in 1:n) {
 }
 
 source('./src/cleanOut.R')
+if (config.DEBUG)
+	cat('End of the script (', date(), ').\n')
+
 # ----------------------------------------------
 # END OF THE SCRIPT.
 # ----------------------------------------------
