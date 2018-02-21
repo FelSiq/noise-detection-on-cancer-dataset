@@ -201,9 +201,10 @@ for (datasetID in 1:n) {
 	}
 }
 
-source('./src/cleanOut.R')
 if (config.DEBUG)
 	cat('End of the script (', date(), ').\n')
+
+source('./src/cleanOut.R')
 
 # ----------------------------------------------
 # END OF THE SCRIPT.
