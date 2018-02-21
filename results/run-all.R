@@ -1,6 +1,12 @@
 # Run all scripts on this repository.
+cat('Generating Latex table of original and corrupted Accuracies...\n')
 source('./gen-original-corrupted-accuracy.R')
+cat('Generating Latex table of P-values...\n')
 source('./gen-p-values.R')
+cat('Generating density plots of each noise filter algorithm...\n')
 source('./gen-noise-removal-density-plots.R')
+cat('Generating density plot of noise filter comparison...\n')
 source('./gen-filter-comparison.R')
+cat('Generating Latex table of filtered accuracies...\n')
 source('./gen-filtered-accuracy.R')
+cat('Finished.\n')
