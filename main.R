@@ -34,7 +34,7 @@ for (datasetID in 1:n) {
 	filepath <- paste('./datasets', config.DATASET_SEQ$datasetName[datasetID], sep = '/')
 	
 	if (config.DEBUG)
-		cat('Getting \'', filepath, '\' dataset...', sep='')
+		cat('Getting \'', filepath, '\' dataset... ', sep='')
 
 	dataset <- general.getDataset(
 		filepath=filepath, 
@@ -70,9 +70,8 @@ for (datasetID in 1:n) {
 		set.test <- subset(dataset, i == kpartition)
 
 		if (config.DEBUG)
-			cat('\tDataset splited as test (', nrow(set.test), 
+			cat('\tStarted #', i, ' Cross Validation fold.\n\tDataset splited as test (', nrow(set.test), 
 				') and train (', nrow(set.train), ') subsets.\n', sep='')
-
 
 		# Feature selection on datasets that are not of type 'Micro-RNA'
 		if (config.DATASET_SEQ$datasetType[datasetID] != 'Micro-RNA') {
@@ -115,7 +114,8 @@ for (datasetID in 1:n) {
 			# is assumed corresponding the '0' factor.
 			if (smoteEnabled) {
 				if (config.DEBUG)
-					cat('\tStarted class rebalancing... ')
+					cat('\tOriginal class balance:\t+ :', sum(set.train$Class == 1), 
+						'\t- :', sum(set.train$Class != 1), '\n\tStarted class rebalancing... ')
 
 				aux <- ubSMOTE(set.train[-which(colnames(set.train) == 'Class')], set.train$Class)
 				smotedTrainSet <- data.frame(aux$X)
@@ -124,7 +124,8 @@ for (datasetID in 1:n) {
 				gc()
 
 				if (config.DEBUG)
-					cat('Done.\n')
+					cat('Done.\n\tNew class balance:\t+ :', sum(smotedTrainSet$Class == 1), 
+						'\t- :', sum(smotedTrainSet$Class != 1), '\n')
 			}
 			
 			if (config.DEBUG)

@@ -8,7 +8,7 @@ Then, artificial noise is inputted on the dataset at 0.2 ratio, using a random m
 
 The corrupted dataset is feed into each noise filter at a time, expecting that they remove at least the majority of the artificial inputted noise, and some noise instances originally on the dataset.
 
-To verify the performance of each noise filter, different predictive models are fit with the original dataset, the corrupted dataset and the filtered dataset, and these three accuracies got to be are compared.
+To verify the performance of each noise filter, different predictive models are fit with the original dataset, the corrupted dataset and the filtered dataset, generating three accuracies that are compared.
 
 # Technical details:
 The experiment is reproducible, because the random seed is fixed with the arbitrarily selected '101010' value, which means that all script runs should hold the same results. **However, your results may not coincide to those found inside 'results' subdirectory, as they are collected between several script changes and, most important, separated script runs.**
