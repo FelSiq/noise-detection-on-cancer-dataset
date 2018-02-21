@@ -12,7 +12,7 @@ source('res-config.R')
 # PROCESS NON-FILTER BASED ACCURACY
 # ---------------------------------------
 
-png(paste('figures/filter-comparison-density-plot.png'), width=720, height=720)
+png('figures/filter-comparison-density-plot.png', width=720, height=720)
 par(mfrow=c(2,2))
 for (f in config.NOISEFILTER_SEQ) {
 	accFiltered <- vector()
@@ -24,7 +24,7 @@ for (f in config.NOISEFILTER_SEQ) {
 	}
 
 	plot(density(accFiltered, to=1.0), type='l', col = 'firebrick2', 
-		main=paste('Densidade de acurácia (filtro: ', f, ')'), ylab='Densidade', xlab='N = 450')
+		main=paste('Densidade de acurácia (filtro: ', f, ')', sep=''), ylab='Densidade', xlab='N = 450')
 	lines(density(accCorrupted, to=1.0), type='l', col = 'navy', lty=2)
 
 }

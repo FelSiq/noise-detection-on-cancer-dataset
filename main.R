@@ -169,22 +169,22 @@ for (datasetID in 1:n) {
 						data.train = (if (smoteEnabled) smotedTrainSet else set.train), 
 						data.test = set.test, 
 						whichClassifier = classifierID)
-					accOriginal <- caret::confusionMatrix(predictionsOriginal, set.test$Class)$overall[1]
-					pValueOriginal <- caret::confusionMatrix(predictionsOriginal, set.test$Class)$overall[6]
+					accOriginal <- caret::confusionMatrix(predictionsOriginal, set.test$Class)$overall['Accuracy']
+					pValueOriginal <- caret::confusionMatrix(predictionsOriginal, set.test$Class)$overall['AccuracyPValue']
 	
 					predictionsNoise <- general.fitAndPredict(
 						data.train = smotedTrainSet.noise$data, 
 						data.test = set.test, 
 						whichClassifier = classifierID)
-					accNoise <- caret::confusionMatrix(predictionsNoise, set.test$Class)$overall[1]
-					pValueNoise <- caret::confusionMatrix(predictionsNoise, set.test$Class)$overall[6]
+					accNoise <- caret::confusionMatrix(predictionsNoise, set.test$Class)$overall['Accuracy']
+					pValueNoise <- caret::confusionMatrix(predictionsNoise, set.test$Class)$overall['AccuracyPValue']
 	
 					predictionsFiltered <- general.fitAndPredict(
 						data.train = filterResult$cleanData, 
 						data.test = set.test, 
 						whichClassifier = classifierID)
-					accFiltered <- caret::confusionMatrix(predictionsFiltered, set.test$Class)$overall[1]
-					pValueFiltered <- caret::confusionMatrix(predictionsFiltered, set.test$Class)$overall[6]
+					accFiltered <- caret::confusionMatrix(predictionsFiltered, set.test$Class)$overall['Accuracy']
+					pValueFiltered <- caret::confusionMatrix(predictionsFiltered, set.test$Class)$overall['AccuracyPValue']
 		
 					if (config.DEBUG)
 						cat('Done.\n')
