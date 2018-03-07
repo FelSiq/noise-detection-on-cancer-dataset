@@ -1,3 +1,4 @@
+*.zip
 datasets/
 noiseResults.out
 results/*.out

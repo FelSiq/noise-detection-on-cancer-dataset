@@ -77,6 +77,7 @@ general.getCrossValidationFolds <- function(dataset, nfolds = 10, classColumn = 
 	# Tjis cross validation function makes sure that all folds will contain
 	# at least one instance of each class of the given dataset.
 	classTypes <- unique(dataset[[classColumn]])
+
 	repeat {
 		kpartition <- sample(1:nfolds, size = nrow(dataset), replace = TRUE)
 

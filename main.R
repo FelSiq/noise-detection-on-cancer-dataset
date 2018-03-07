@@ -73,11 +73,11 @@ for (datasetID in 1:n) {
 			cat('\tStarted #', i, ' Cross Validation fold.\n\tDataset splited as test (', nrow(set.test), 
 				') and train (', nrow(set.train), ') subsets.\n', sep='')
 
-		# Feature selection on datasets that are not of type 'Micro-RNA'
-		if (config.DATASET_SEQ$datasetType[datasetID] != 'Micro-RNA') {
+		# Feature selection on datasets that are not of type 'Micro-RNA' mainly
+		if (config.ENABLE_FT_SELECTION | config.DATASET_SEQ$datasetType[datasetID] != 'Micro-RNA') {
 			if (config.DEBUG)
 				cat('\tStarted feature selection... ')
-			# CARET APPROACH
+			# CARET APPROACH (not very good results in general)
 			# control <- rfeControl(functions = rfFuncs, method = 'cv', number = 10)
 			# results <- rfe.nonCaret(
 			# 	x = set.train[-which(colnames(set.train) == 'Class')],
@@ -170,30 +170,28 @@ for (datasetID in 1:n) {
 						data.train = (if (smoteEnabled) smotedTrainSet else set.train), 
 						data.test = set.test, 
 						whichClassifier = classifierID)
-					accOriginal <- caret::confusionMatrix(predictionsOriginal, set.test$Class)$overall['Accuracy']
-					pValueOriginal <- caret::confusionMatrix(predictionsOriginal, set.test$Class)$overall['AccuracyPValue']
+					resultOriginal <- caret::confusionMatrix(predictionsOriginal, set.test$Class, positive='1')$byClass
 	
 					predictionsNoise <- general.fitAndPredict(
 						data.train = smotedTrainSet.noise$data, 
 						data.test = set.test, 
 						whichClassifier = classifierID)
-					accNoise <- caret::confusionMatrix(predictionsNoise, set.test$Class)$overall['Accuracy']
-					pValueNoise <- caret::confusionMatrix(predictionsNoise, set.test$Class)$overall['AccuracyPValue']
+					resultNoise <- caret::confusionMatrix(predictionsNoise, set.test$Class, positive='1')$byClass
 	
 					predictionsFiltered <- general.fitAndPredict(
 						data.train = filterResult$cleanData, 
 						data.test = set.test, 
 						whichClassifier = classifierID)
-					accFiltered <- caret::confusionMatrix(predictionsFiltered, set.test$Class)$overall['Accuracy']
-					pValueFiltered <- caret::confusionMatrix(predictionsFiltered, set.test$Class)$overall['AccuracyPValue']
+					resultFiltered <- caret::confusionMatrix(predictionsFiltered, set.test$Class, positive='1')$byClass
 		
 					if (config.DEBUG)
 						cat('Done.\n')
 
 					cat(date(), i, config.DATASET_SEQ$datasetName[datasetID], 
 						classifierID, noiseFilterID, smoteEnabled, 
-						accOriginal, accNoise, accFiltered, 
-						pValueOriginal, pValueNoise, pValueFiltered, 
+						as.vector(resultOriginal), 
+						as.vector(resultNoise), 
+						as.vector(resultFiltered),
 						'\n', sep='|')
 				}
 			}

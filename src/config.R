@@ -32,7 +32,7 @@ config.RANDOM_SEED <- 101010
 # Set default output file
 sink(file='noiseResults.out', append=TRUE)
 # Display DEBUG information?
-config.DEBUG <- FALSE 
+config.DEBUG <- TRUE 
 
 config.DATASET_SEQ <- list()
 # Initial experiment setup
@@ -87,6 +87,8 @@ config.KNN_K <- 5
 # Borute approach only
 config.BORUTA_MAX_RUNS <- 1000
 # Should the dataset be stratified sampled before processing?
-config.SAMPLE_DATA <- TRUE
+config.SAMPLE_DATA <- FALSE
 # If above is TRUE, how many instances should be kept?
 config.SAMPLE_SIZE <- 80
+# Enable FT Selection for all type of data?
+config.ENABLE_FT_SELECTION <- TRUE
