@@ -4,7 +4,7 @@
 # Pre-configuration for all result-related scripts.
 # ---------------------------------------
 # Get all filepath of results metadata from the experiment.
-metadataPathList <- list.files(pattern='.*\\.dat', recursive=TRUE)
+metadataPathList <- list.files(pattern='.*\\.ppc', recursive=TRUE)
 
 # The order of the configuration below follows strictly the pattern on my report and does matter.
 config.SMOTE_SEQ <- c(FALSE, TRUE)
@@ -16,9 +16,16 @@ getMetadata <- function(path) {
 	metadata <- metadata[-ncol(metadata)]
 
 	colnames(metadata) <- c('Time', 'k-fold', 'Dataset', 
-			'Classifier', 'Filter', 'SMOTE', 
-			'predOriginal', 'predCorrupted', 'predFiltered',
-			'PVOriginal', 'PVCorrupted', 'PVFiltered')
+			'Classifier', 'Filter', 'SMOTE',
+			'OriginalSensitivity', 'OriginalSpecificity', 'OriginalPosPredValue', 'OriginalNegPredValue', 
+			'OriginalPrevalence', 'OriginalDetectionRate', 'OriginalDetectionPrevalence', 'OriginalBalancedAccuracy',
+			'CorruptedSensitivity', 'CorruptedSpecificity', 'CorruptedPosPredValue', 'CorruptedNegPredValue', 
+			'CorruptedPrevalence', 'CorruptedDetectionRate', 'CorruptedDetectionPrevalence', 'CorruptedBalancedAccuracy',
+			'FilteredSensitivity', 'FilteredSpecificity', 'FilteredPosPredValue', 'FilteredNegPredValue', 
+			'FilteredPrevalence', 'FilteredDetectionRate', 'FilteredDetectionPrevalence', 'FilteredBalancedAccuracy'
+			)
+			
+		
 	return (metadata)
 }
 
