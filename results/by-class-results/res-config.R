@@ -18,13 +18,14 @@ getMetadata <- function(path) {
 	colnames(metadata) <- c('Time', 'k-fold', 'Dataset', 
 			'Classifier', 'Filter', 'SMOTE',
 			'OriginalSensitivity', 'OriginalSpecificity', 'OriginalPosPredValue', 'OriginalNegPredValue', 
-			'OriginalPrevalence', 'OriginalDetectionRate', 'OriginalDetectionPrevalence', 'OriginalBalancedAccuracy',
+			'OriginalPrecision', 'OriginalRecall', 'OriginalF1', 'OriginalPrevalence', 'OriginalDetectionRate', 
+			'OriginalDetectionPrevalence', 'OriginalBalancedAccuracy',
 			'CorruptedSensitivity', 'CorruptedSpecificity', 'CorruptedPosPredValue', 'CorruptedNegPredValue', 
-			'CorruptedPrevalence', 'CorruptedDetectionRate', 'CorruptedDetectionPrevalence', 'CorruptedBalancedAccuracy',
+			'CorruptedPrecision', 'CorruptedRecall', 'CorruptedF1', 'CorruptedPrevalence', 'CorruptedDetectionRate', 
+			'CorruptedDetectionPrevalence', 'CorruptedBalancedAccuracy',
 			'FilteredSensitivity', 'FilteredSpecificity', 'FilteredPosPredValue', 'FilteredNegPredValue', 
-			'FilteredPrevalence', 'FilteredDetectionRate', 'FilteredDetectionPrevalence', 'FilteredBalancedAccuracy'
-			)
-			
+			'FilteredPrecision', 'FilteredRecall', 'FilteredF1', 'FilteredPrevalence', 'FilteredDetectionRate', 
+			'FilteredDetectionPrevalence', 'FilteredBalancedAccuracy')
 		
 	return (metadata)
 }
