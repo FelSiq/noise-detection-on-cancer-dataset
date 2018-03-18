@@ -15,17 +15,9 @@ getMetadata <- function(path) {
 	metadata <- read.table(path, sep='|')
 	metadata <- metadata[-ncol(metadata)]
 
-	colnames(metadata) <- c('Time', 'k-fold', 'Dataset', 
-			'Classifier', 'Filter', 'SMOTE',
-			'OriginalSensitivity', 'OriginalSpecificity', 'OriginalPosPredValue', 'OriginalNegPredValue', 
-			'OriginalPrecision', 'OriginalRecall', 'OriginalF1', 'OriginalPrevalence', 'OriginalDetectionRate', 
-			'OriginalDetectionPrevalence', 'OriginalBalancedAccuracy',
-			'CorruptedSensitivity', 'CorruptedSpecificity', 'CorruptedPosPredValue', 'CorruptedNegPredValue', 
-			'CorruptedPrecision', 'CorruptedRecall', 'CorruptedF1', 'CorruptedPrevalence', 'CorruptedDetectionRate', 
-			'CorruptedDetectionPrevalence', 'CorruptedBalancedAccuracy',
-			'FilteredSensitivity', 'FilteredSpecificity', 'FilteredPosPredValue', 'FilteredNegPredValue', 
-			'FilteredPrecision', 'FilteredRecall', 'FilteredF1', 'FilteredPrevalence', 'FilteredDetectionRate', 
-			'FilteredDetectionPrevalence', 'FilteredBalancedAccuracy')
+	colnames(metadata) <- c('Time', 'k-fold', 'Dataset', 'Classifier', 
+		'Filter', 'SMOTE', 'AccOriginal', 'AccCorrupted', 'AccFiltered', 
+		'PValueOriginal', 'PValueCorrupted', 'PValueFiltered')
 		
 	return (metadata)
 }

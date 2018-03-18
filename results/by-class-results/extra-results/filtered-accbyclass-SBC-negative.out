@@ -1,0 +1,76 @@
+
+
+\hline \multicolumn{7}{|c|}{\textbf{Acurácia (filtro: HARF)}} \\ \hline
+
+\colcell\dadosANome & $1\pm0 $ & $.98\pm.04 $ & $1\pm0 $ & \cellcolor{Gray} $0\pm0$ & \cellcolor{Gray} $-.02\pm.04$ & \cellcolor{Gray} $.02\pm.04$ \\
+\colcell\dadosBNome & $.97\pm.06 $ & $1\pm0 $ & $.95\pm.07 $ & \cellcolor{Gray} $0\pm.1$ & \cellcolor{Gray} $0\pm.1$ & \cellcolor{Gray} $.1\pm.2$ \\
+\colcell\dadosCNome & $1\pm0 $ & $1\pm0 $ & $.99\pm.02 $ & \cellcolor{Gray} $0\pm0$ & \cellcolor{Gray} $0\pm0$ & \cellcolor{Gray} $.01\pm.06$ \\
+\colcell\dadosDNome & $.97\pm.06 $ & $.97\pm.06 $ & $.97\pm.06 $ & \cellcolor{Gray} $0\pm.1$ & \cellcolor{Gray} $-.03\pm.06$ & \cellcolor{Gray} $0\pm.2$ \\
+\colcell\dadosENome & $.96\pm.05 $ & $.99\pm.02 $ & $.94\pm.05 $ & \cellcolor{Gray} $0\pm.1$ & \cellcolor{Gray} $0\pm.04$ & \cellcolor{Gray} $0\pm.1$ \\
+\colcell\dadosFNome & $.99\pm.02 $ & $1\pm0 $ & $1\pm0 $ & \cellcolor{Gray} $0\pm.04$ & \cellcolor{Gray} $.01\pm.02$ & \cellcolor{Blue} $.04\pm.03$ \\
+\colcell\dadosGNome & $1\pm0 $ & $1\pm0 $ & $.9\pm.1 $ & \cellcolor{Gray} $0\pm0$ & \cellcolor{Gray} $0\pm0$ & \cellcolor{Gray} $0\pm.3$ \\
+\colcell\dadosHNome & $.96\pm.07 $ & $.98\pm.04 $ & $.98\pm.04 $ & \cellcolor{Gray} $0\pm.1$ & \cellcolor{Gray} $.02\pm.08$ & \cellcolor{Gray} $.1\pm.2$ \\
+\colcell\dadosINome & $.97\pm.03 $ & $.98\pm.03 $ & $.9\pm.1 $ & \cellcolor{Gray} $0\pm.07$ & \cellcolor{Gray} $0\pm.06$ & \cellcolor{Gray} $0\pm.2$ \\
+\colcell\dadosJNome & $.99\pm.03 $ & $.98\pm.03 $ & $.96\pm.06 $ & \cellcolor{Gray} $0\pm.06$ & \cellcolor{Gray} $-.01\pm.05$ & \cellcolor{Gray} $0\pm.1$ \\
+\colcell\dadosKNome & $.87\pm.03 $ & $.89\pm.05 $ & $.91\pm.06 $ & \cellcolor{Gray} $-.03\pm.09$ & \cellcolor{Gray} $0\pm.1$ & \cellcolor{Gray} $.1\pm.2$ \\
+\colcell\dadosLNome & $.9\pm.2 $ & $.9\pm.2 $ & $.8\pm.2 $ & \cellcolor{Gray} $0\pm.3$ & \cellcolor{Gray} $0\pm.3$ & \cellcolor{Gray} $0\pm.3$ \\
+\colcell\dadosMNome & $.9\pm.1 $ & $.9\pm.1 $ & $.92\pm.09 $ & \cellcolor{Gray} $0\pm.3$ & \cellcolor{Gray} $0\pm.2$ & \cellcolor{Gray} $0\pm.2$ \\
+\colcell\dadosNNome & $.92\pm.08 $ & $.9\pm.1 $ & $.8\pm.2 $ & \cellcolor{Gray} $.1\pm.2$ & \cellcolor{Gray} $0\pm.2$ & \cellcolor{Gray} $0\pm.3$ \\
+\colcell\dadosONome & $.89\pm.07 $ & $.9\pm.2 $ & $.87\pm.09 $ & \cellcolor{Gray} $0\pm.2$ & \cellcolor{Gray} $0\pm.3$ & \cellcolor{Gray} $.1\pm.2$ \\
+
+
+\hline \multicolumn{7}{|c|}{\textbf{Acurácia (filtro: AENN)}} \\ \hline
+
+\colcell\dadosANome & $.9\pm.2 $ & $1\pm0 $ & $1\pm0 $ & \cellcolor{Gray} $-.1\pm.2$ & \cellcolor{Gray} $0\pm0$ & \cellcolor{Gray} $.02\pm.04$ \\
+\colcell\dadosBNome & $.95\pm.07 $ & $.98\pm.04 $ & $.97\pm.07 $ & \cellcolor{Gray} $0\pm.1$ & \cellcolor{Gray} $0\pm.1$ & \cellcolor{Gray} $.1\pm.2$ \\
+\colcell\dadosCNome & $1\pm0 $ & $1\pm0 $ & $.99\pm.02 $ & \cellcolor{Gray} $0\pm0$ & \cellcolor{Gray} $0\pm0$ & \cellcolor{Gray} $.01\pm.06$ \\
+\colcell\dadosDNome & $.96\pm.06 $ & $.97\pm.06 $ & $1\pm0 $ & \cellcolor{Gray} $0\pm.1$ & \cellcolor{Gray} $-.03\pm.06$ & \cellcolor{Gray} $.05\pm.09$ \\
+\colcell\dadosENome & $.96\pm.05 $ & $1\pm0 $ & $.99\pm.03 $ & \cellcolor{Gray} $0\pm.1$ & \cellcolor{Gray} $.01\pm.02$ & \cellcolor{Gray} $.1\pm.1$ \\
+\colcell\dadosFNome & $.98\pm.04 $ & $.98\pm.04 $ & $.98\pm.02 $ & \cellcolor{Gray} $-.02\pm.06$ & \cellcolor{Gray} $-.02\pm.06$ & \cellcolor{Gray} $.02\pm.06$ \\
+\colcell\dadosGNome & $1\pm0 $ & $1\pm0 $ & $.96\pm.09 $ & \cellcolor{Gray} $0\pm0$ & \cellcolor{Gray} $0\pm0$ & \cellcolor{Gray} $.1\pm.2$ \\
+\colcell\dadosHNome & $.97\pm.04 $ & $1\pm0 $ & $1\pm0 $ & \cellcolor{Gray} $0\pm.1$ & \cellcolor{Gray} $.02\pm.04$ & \cellcolor{Blue} $.2\pm.1$ \\
+\colcell\dadosINome & $.97\pm.03 $ & $.98\pm.03 $ & $.9\pm.1 $ & \cellcolor{Gray} $0\pm.07$ & \cellcolor{Gray} $0\pm.06$ & \cellcolor{Gray} $0\pm.2$ \\
+\colcell\dadosJNome & $.96\pm.07 $ & $.96\pm.04 $ & $.92\pm.03 $ & \cellcolor{Gray} $0\pm.1$ & \cellcolor{Gray} $-.04\pm.04$ & \cellcolor{Gray} $-.04\pm.09$ \\
+\colcell\dadosKNome & $.91\pm.09 $ & $.91\pm.07 $ & $.92\pm.05 $ & \cellcolor{Gray} $0\pm.1$ & \cellcolor{Gray} $0\pm.09$ & \cellcolor{Gray} $.1\pm.2$ \\
+\colcell\dadosLNome & $.9\pm.2 $ & $.8\pm.1 $ & $.8\pm.2 $ & \cellcolor{Gray} $.1\pm.3$ & \cellcolor{Gray} $0\pm.3$ & \cellcolor{Gray} $0\pm.3$ \\
+\colcell\dadosMNome & $.96\pm.06 $ & $.9\pm.1 $ & $.96\pm.06 $ & \cellcolor{Gray} $.1\pm.2$ & \cellcolor{Gray} $-.1\pm.2$ & \cellcolor{Gray} $0\pm.2$ \\
+\colcell\dadosNNome & $.9\pm.1 $ & $.9\pm.1 $ & $.8\pm.2 $ & \cellcolor{Gray} $.1\pm.2$ & \cellcolor{Gray} $0\pm.2$ & \cellcolor{Gray} $0\pm.3$ \\
+\colcell\dadosONome & $.9\pm.1 $ & $.9\pm.1 $ & $.9\pm.1 $ & \cellcolor{Gray} $0\pm.2$ & \cellcolor{Gray} $0\pm.2$ & \cellcolor{Gray} $.1\pm.2$ \\
+
+
+\hline \multicolumn{7}{|c|}{\textbf{Acurácia (filtro: INFFC)}} \\ \hline
+
+\colcell\dadosANome & $1\pm0 $ & $1\pm0 $ & $.98\pm.04 $ & \cellcolor{Gray} $0\pm0$ & \cellcolor{Gray} $0\pm0$ & \cellcolor{Gray} $0\pm.09$ \\
+\colcell\dadosBNome & $.93\pm.06 $ & $.97\pm.07 $ & $.9\pm.1 $ & \cellcolor{Gray} $0\pm.1$ & \cellcolor{Gray} $0\pm.2$ & \cellcolor{Gray} $0\pm.3$ \\
+\colcell\dadosCNome & $1\pm0 $ & $1\pm0 $ & $.98\pm.04 $ & \cellcolor{Gray} $0\pm0$ & \cellcolor{Gray} $0\pm0$ & \cellcolor{Gray} $0\pm.08$ \\
+\colcell\dadosDNome & $.97\pm.06 $ & $1\pm0 $ & $.95\pm.09 $ & \cellcolor{Gray} $0\pm.1$ & \cellcolor{Gray} $0\pm0$ & \cellcolor{Gray} $0\pm.2$ \\
+\colcell\dadosENome & $.96\pm.06 $ & $1\pm0 $ & $.94\pm.08 $ & \cellcolor{Gray} $0\pm.1$ & \cellcolor{Gray} $.01\pm.02$ & \cellcolor{Gray} $0\pm.2$ \\
+\colcell\dadosFNome & $.99\pm.02 $ & $.99\pm.02 $ & $.98\pm.03 $ & \cellcolor{Gray} $0\pm.04$ & \cellcolor{Gray} $0\pm.04$ & \cellcolor{Gray} $.01\pm.07$ \\
+\colcell\dadosGNome & $1\pm0 $ & $.9\pm.1 $ & $.9\pm.1 $ & \cellcolor{Gray} $0\pm0$ & \cellcolor{Gray} $-.1\pm.1$ & \cellcolor{Gray} $0\pm.2$ \\
+\colcell\dadosHNome & $.95\pm.07 $ & $.97\pm.05 $ & $.9\pm.1 $ & \cellcolor{Gray} $0\pm.1$ & \cellcolor{Gray} $0\pm.09$ & \cellcolor{Gray} $0\pm.2$ \\
+\colcell\dadosINome & $.97\pm.03 $ & $.98\pm.03 $ & $1\pm.1 $ & \cellcolor{Gray} $0\pm.07$ & \cellcolor{Gray} $0\pm.06$ & \cellcolor{Gray} $0\pm.2$ \\
+\colcell\dadosJNome & $.99\pm.03 $ & $.99\pm.03 $ & $.95\pm.08 $ & \cellcolor{Gray} $0\pm.06$ & \cellcolor{Gray} $0\pm.06$ & \cellcolor{Gray} $0\pm.1$ \\
+\colcell\dadosKNome & $.89\pm.07 $ & $.8\pm.1 $ & $.8\pm.1 $ & \cellcolor{Gray} $0\pm.1$ & \cellcolor{Gray} $-.1\pm.1$ & \cellcolor{Gray} $0\pm.3$ \\
+\colcell\dadosLNome & $.8\pm.1 $ & $.9\pm.2 $ & $.8\pm.2 $ & \cellcolor{Gray} $0\pm.2$ & \cellcolor{Gray} $0\pm.3$ & \cellcolor{Gray} $0\pm.3$ \\
+\colcell\dadosMNome & $.9\pm.1 $ & $.9\pm.1 $ & $.9\pm.1 $ & \cellcolor{Gray} $0\pm.3$ & \cellcolor{Gray} $-.1\pm.2$ & \cellcolor{Gray} $0\pm.2$ \\
+\colcell\dadosNNome & $.8\pm.1 $ & $.8\pm.1 $ & $.8\pm.2 $ & \cellcolor{Gray} $0\pm.2$ & \cellcolor{Gray} $0\pm.2$ & \cellcolor{Gray} $0\pm.3$ \\
+\colcell\dadosONome & $.88\pm.09 $ & $.9\pm.1 $ & $.8\pm.1 $ & \cellcolor{Gray} $0\pm.2$ & \cellcolor{Gray} $0\pm.2$ & \cellcolor{Gray} $0\pm.3$ \\
+
+
+\hline \multicolumn{7}{|c|}{\textbf{Acurácia (filtro: ENG)}} \\ \hline
+
+\colcell\dadosANome & $.9\pm.2 $ & $1\pm0 $ & $1\pm0 $ & \cellcolor{Gray} $-.1\pm.2$ & \cellcolor{Gray} $0\pm0$ & \cellcolor{Gray} $.02\pm.04$ \\
+\colcell\dadosBNome & $.95\pm.07 $ & $.98\pm.04 $ & $.95\pm.07 $ & \cellcolor{Gray} $0\pm.1$ & \cellcolor{Gray} $0\pm.1$ & \cellcolor{Gray} $.1\pm.2$ \\
+\colcell\dadosCNome & $1\pm0 $ & $1\pm0 $ & $.99\pm.02 $ & \cellcolor{Gray} $0\pm0$ & \cellcolor{Gray} $0\pm0$ & \cellcolor{Gray} $.01\pm.06$ \\
+\colcell\dadosDNome & $.97\pm.06 $ & $.97\pm.06 $ & $.97\pm.06 $ & \cellcolor{Gray} $0\pm.1$ & \cellcolor{Gray} $-.03\pm.06$ & \cellcolor{Gray} $0\pm.1$ \\
+\colcell\dadosENome & $.96\pm.05 $ & $.98\pm.03 $ & $.95\pm.07 $ & \cellcolor{Gray} $0\pm.1$ & \cellcolor{Gray} $-.01\pm.05$ & \cellcolor{Gray} $0\pm.2$ \\
+\colcell\dadosFNome & $.98\pm.02 $ & $.98\pm.04 $ & $.98\pm.04 $ & \cellcolor{Gray} $-.01\pm.04$ & \cellcolor{Gray} $-.02\pm.06$ & \cellcolor{Gray} $.02\pm.07$ \\
+\colcell\dadosGNome & $1\pm0 $ & $1\pm0 $ & $.96\pm.09 $ & \cellcolor{Gray} $0\pm0$ & \cellcolor{Gray} $0\pm0$ & \cellcolor{Gray} $.1\pm.2$ \\
+\colcell\dadosHNome & $.96\pm.07 $ & $.98\pm.03 $ & $.97\pm.04 $ & \cellcolor{Gray} $0\pm.1$ & \cellcolor{Gray} $.02\pm.08$ & \cellcolor{Gray} $.1\pm.2$ \\
+\colcell\dadosINome & $.97\pm.03 $ & $.98\pm.03 $ & $.9\pm.1 $ & \cellcolor{Gray} $0\pm.07$ & \cellcolor{Gray} $0\pm.06$ & \cellcolor{Gray} $0\pm.2$ \\
+\colcell\dadosJNome & $.98\pm.03 $ & $.98\pm.03 $ & $.99\pm.02 $ & \cellcolor{Gray} $0\pm.07$ & \cellcolor{Gray} $-.01\pm.06$ & \cellcolor{Gray} $.03\pm.08$ \\
+\colcell\dadosKNome & $.85\pm.05 $ & $.87\pm.05 $ & $.9\pm.01 $ & \cellcolor{Gray} $-.1\pm.1$ & \cellcolor{Gray} $-.03\pm.07$ & \cellcolor{Gray} $.1\pm.2$ \\
+\colcell\dadosLNome & $.8\pm.1 $ & $.9\pm.2 $ & $.8\pm.2 $ & \cellcolor{Gray} $0\pm.2$ & \cellcolor{Gray} $0\pm.3$ & \cellcolor{Gray} $0\pm.3$ \\
+\colcell\dadosMNome & $.9\pm.1 $ & $.9\pm.1 $ & $.9\pm.1 $ & \cellcolor{Gray} $0\pm.3$ & \cellcolor{Gray} $0\pm.2$ & \cellcolor{Gray} $0\pm.3$ \\
+\colcell\dadosNNome & $.88\pm.09 $ & $.88\pm.09 $ & $.8\pm.1 $ & \cellcolor{Gray} $0\pm.2$ & \cellcolor{Gray} $0\pm.2$ & \cellcolor{Gray} $.1\pm.3$ \\
+\colcell\dadosONome & $.89\pm.07 $ & $.9\pm.1 $ & $.8\pm.1 $ & \cellcolor{Gray} $0\pm.2$ & \cellcolor{Gray} $0\pm.3$ & \cellcolor{Gray} $0\pm.3$ \\
