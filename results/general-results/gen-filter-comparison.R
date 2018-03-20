@@ -41,6 +41,7 @@ for (f in config.NOISEFILTER_SEQ) {
 
 	# DEBUG cat
 	# cat(length(accFiltered), length(accCorrupted), '\n', sep='\t')
+	cat(mean(accFiltered), mean(accCorrupted), median(accFiltered), median(accCorrupted), '\n', sep='\t')
 
 	plot(density(accFiltered, from=0.5, to=1.0), type='l', col = 'firebrick2', 
 		main=paste('Densidade de acurácia (filtro: ', f, ')', sep=''), ylab='Densidade', xlab='N = 135')

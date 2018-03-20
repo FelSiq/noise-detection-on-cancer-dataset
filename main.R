@@ -153,51 +153,73 @@ for (datasetID in 1:n) {
 				if (config.DEBUG)
 					cat('Done.\n')
 
-				for (classifierID in config.CLASSIFIER_SEQ) {
 
-					if (config.DEBUG)
-						cat('\tCalling', classifierID, 'for classification task... ')
-
-					# Here all the three different accuracies are gotten. It is not safe to make any assumptions of
-					# the results beforehand, but the expected pattern is predictionsNoise <= predictionsFiltered <= predictionsOriginal.
-					# Of course, in some scenarios it will not be true, so the k-fold cross validation comes into the scene,
-					# trying to minimize the impact of unusual cases. A big value of k is preferred, but this would cost too much
-					# computational power, so k = 5 was originally adopted in this experiment. 
-
-					# Please note that the confusion matrix of the caret package gives much more metadata than the accuracy value,
-					# so a deeper analysis could take other statistic values into account.
-					predictionsOriginal <- general.fitAndPredict(
-						data.train = (if (smoteEnabled) smotedTrainSet else set.train), 
-						data.test = set.test, 
-						whichClassifier = classifierID)
-					resultOriginal <- caret::confusionMatrix(predictionsOriginal, set.test$Class, positive='1')$byClass
-	
-					predictionsNoise <- general.fitAndPredict(
-						data.train = smotedTrainSet.noise$data, 
-						data.test = set.test, 
-						whichClassifier = classifierID)
-					resultNoise <- caret::confusionMatrix(predictionsNoise, set.test$Class, positive='1')$byClass
-	
-					predictionsFiltered <- general.fitAndPredict(
-						data.train = filterResult$cleanData, 
-						data.test = set.test, 
-						whichClassifier = classifierID)
-					resultFiltered <- caret::confusionMatrix(predictionsFiltered, set.test$Class, positive='1')$byClass
-		
-					if (config.DEBUG)
-						cat('Done.\n')
-
-					cat(date(), i, config.DATASET_SEQ$datasetName[datasetID], 
-						classifierID, noiseFilterID, smoteEnabled, 
-						as.vector(resultOriginal), 
-						as.vector(resultNoise), 
-						as.vector(resultFiltered),
-						'\n', sep='|')
+				# Make sure that every train data has two classes
+				if (config.DEBUG)
+					cat('Verifying if all train datasets has two classes...\n')
+				
+				checkClass <- 0
+				if (smoteEnabled) {
+					checkClass <- checkClass + (nrow(unique(smotedTrainSet['Class'])) == 2)
+				} else {
+					checkClass <- checkClass + (nrow(unique(set.train['Class'])) == 2)
 				}
-			}
-		}
-	}
-}
+				checkClass <- checkClass + (nrow(unique(smotedTrainSet.noise$data['Class'])) == 2)
+				checkClass <- checkClass + (nrow(unique(filterResult$cleanData['Class'])) == 2)
+				
+				if (checkClass != 3) {
+					cat('(checkClass =', checkClass, ') No two classes found with combination {', 
+						datasetID, i, smoteEnabled, noiseFilterID, '}, skipping.\n', sep=' ')
+				} else {
+					if (config.DEBUG)
+						cat('OK (All three datasets has two classes).\n')
+	
+					for (classifierID in config.CLASSIFIER_SEQ) {
+
+						if (config.DEBUG)
+							cat('\tCalling', classifierID, 'for classification task... ')
+
+						# Here all the three different accuracies are gotten. It is not safe to make any assumptions of
+						# the results beforehand, but the expected pattern is predictionsNoise <= predictionsFiltered <= predictionsOriginal.
+						# Of course, in some scenarios it will not be true, so the k-fold cross validation comes into the scene,
+						# trying to minimize the impact of unusual cases. A big value of k is preferred, but this would cost too much
+						# computational power, so k = 5 was originally adopted in this experiment. 
+
+						# Please note that the confusion matrix of the caret package gives much more metadata than the accuracy value,
+						# so a deeper analysis could take other statistic values into account.
+						predictionsOriginal <- general.fitAndPredict(
+							data.train = (if (smoteEnabled) smotedTrainSet else set.train), 
+							data.test = set.test, 
+							whichClassifier = classifierID)
+						resultOriginal <- caret::confusionMatrix(predictionsOriginal, set.test$Class, positive='1')$byClass
+		
+						predictionsNoise <- general.fitAndPredict(
+							data.train = smotedTrainSet.noise$data, 
+							data.test = set.test, 
+							whichClassifier = classifierID)
+						resultNoise <- caret::confusionMatrix(predictionsNoise, set.test$Class, positive='1')$byClass
+		
+						predictionsFiltered <- general.fitAndPredict(
+							data.train = filterResult$cleanData, 
+							data.test = set.test, 
+							whichClassifier = classifierID)
+						resultFiltered <- caret::confusionMatrix(predictionsFiltered, set.test$Class, positive='1')$byClass
+			
+						if (config.DEBUG)
+							cat('Done.\n')
+
+						cat(date(), i, config.DATASET_SEQ$datasetName[datasetID], 
+							classifierID, noiseFilterID, smoteEnabled, 
+							as.vector(resultOriginal), 
+							as.vector(resultNoise), 
+							as.vector(resultFiltered),
+							'\n', sep='|')
+					} # classfier LOOP END
+				} # check class END
+			} # noise filter loop END
+		} # smote loop END
+	} #CV folds LOOP END
+} # Datasets LOOP END
 
 if (config.DEBUG)
 	cat('End of the script (', date(), ').\n')
